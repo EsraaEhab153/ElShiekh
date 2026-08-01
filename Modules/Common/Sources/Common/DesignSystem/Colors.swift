@@ -8,6 +8,12 @@ public extension Color {
         /// Light green background for selected states (#D6E7DC)
         public static let primaryLight = Color(hex: "D6E7DC")
         
+        /// Green color for success and online states (#28A745)
+        public static let success = Color(hex: "28A745")
+        
+        /// Red color for destructive actions (#DC3545)
+        public static let destructive = Color(hex: "DC3545")
+        
         /// Gray color used for unselected icons and text (#84938B)
         public static let grayText = Color(hex: "84938B")
         

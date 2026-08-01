@@ -7,9 +7,9 @@ public enum TabItem: Int, CaseIterable {
     public var title: String {
         switch self {
         case .home:
-            return "الرئيسية"
+            return "Home"
         case .profile:
-            return "الملف الشخصي"
+            return "Profile"
         }
     }
     
