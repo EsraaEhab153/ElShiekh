@@ -19,7 +19,7 @@ public struct HomeScreen: View {
                         .fill(Color.App.primary)
                         .frame(width: 48, height: 48)
                         .overlay(
-                            Text("YR")
+                            Text("EE")
                                 .foregroundColor(.white)
                                 .font(.system(size: 16, weight: .bold))
                         )
@@ -28,15 +28,14 @@ public struct HomeScreen: View {
                     
                     // Welcome Text
                     VStack(alignment: .trailing, spacing: 4) {
-                        Text("المآهر")
+                        Text("Al Maher")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(Color.App.primary)
                         
-                        Text("أهلاً بعودتك 👋") // Added wave emoji as typical for welcome, though optional
+                        Text("Welcome back") // Added wave emoji as typical for welcome, though optional
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(Color.App.primary)
-                        
-                        Text("إدارة حالة التواجد والحلقات الخاصة بك.")
+                        Text("Manage your availability status and study circles")
                             .font(.system(size: 14, weight: .regular))
                             .foregroundColor(Color.App.grayText)
                             .multilineTextAlignment(.trailing)
@@ -55,11 +54,11 @@ public struct HomeScreen: View {
                     Spacer()
                     
                     VStack(alignment: .trailing, spacing: 4) {
-                        Text("أنت غير متصل")
+                        Text("You are offline")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Color.App.primary)
                         
-                        Text("فعّل التواجد لاستقبال طلبات اللقاءات.")
+                        Text("Enable your availability to receive meeting requests")
                             .font(.system(size: 12, weight: .regular))
                             .foregroundColor(Color.App.grayText)
                     }

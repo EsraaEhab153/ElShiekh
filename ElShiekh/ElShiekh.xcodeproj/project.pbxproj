@@ -14,6 +14,8 @@
 		CADE6689301DFD22006714F5 /* ElShiekhTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6688301DFD22006714F5 /* ElShiekhTests.swift */; };
 		CADE6693301DFD22006714F5 /* ElShiekhUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6692301DFD22006714F5 /* ElShiekhUITests.swift */; };
 		CADE6695301DFD22006714F5 /* ElShiekhUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6694301DFD22006714F5 /* ElShiekhUITestsLaunchTests.swift */; };
+		CADE66A3301E0A7D006714F5 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = CADE66A2301E0A7D006714F5 /* Common */; };
+		CADE66A5301E0A83006714F5 /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = CADE66A4301E0A83006714F5 /* Home */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CADE66A3301E0A7D006714F5 /* Common in Frameworks */,
+				CADE66A5301E0A83006714F5 /* Home in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +82,7 @@
 				CADE6687301DFD22006714F5 /* ElShiekhTests */,
 				CADE6691301DFD22006714F5 /* ElShiekhUITests */,
 				CADE6675301DFD1F006714F5 /* Products */,
+				CADE66A1301E0A7D006714F5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -127,6 +132,13 @@
 			path = ElShiekhUITests;
 			sourceTree = "<group>";
 		};
+		CADE66A1301E0A7D006714F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +155,10 @@
 			dependencies = (
 			);
 			name = ElShiekh;
+			packageProductDependencies = (
+				CADE66A2301E0A7D006714F5 /* Common */,
+				CADE66A4301E0A83006714F5 /* Home */,
+			);
 			productName = ElShiekh;
 			productReference = CADE6674301DFD1F006714F5 /* ElShiekh.app */;
 			productType = "com.apple.product-type.application";
@@ -582,6 +598,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CADE66A2301E0A7D006714F5 /* Common */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Common;
+		};
+		CADE66A4301E0A83006714F5 /* Home */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Home;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CADE666C301DFD1F006714F5 /* Project object */;
 }
