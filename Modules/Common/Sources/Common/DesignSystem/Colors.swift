@@ -13,11 +13,14 @@ public extension Color {
         
         /// Background color for the tab bar and general backgrounds
         public static let background = Color.white
+        
+        /// Background color for cards
+        public static let cardBackground = Color(hex: "E8EDE9")
     }
 }
 
 // Helper to initialize Color from hex
-extension Color {
+public extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
