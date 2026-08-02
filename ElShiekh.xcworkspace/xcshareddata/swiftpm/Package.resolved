@@ -17,6 +17,24 @@
         "revision" : "94a477c69f9ad730e2225f54948e87f9f4d77c24",
         "version" : "4.6.2"
       }
+    },
+    {
+      "identity" : "reachability.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ashleymills/Reachability.swift",
+      "state" : {
+        "revision" : "21d1dc412cfecbe6e34f1f4c4eb88d3f912654a6",
+        "version" : "5.2.4"
+      }
+    },
+    {
+      "identity" : "swiftstomp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Romixery/SwiftStomp.git",
+      "state" : {
+        "revision" : "f25926d2ab67ec0391de9a706cf71dfb08d36bbc",
+        "version" : "1.2.1"
+      }
     }
   ],
   "version" : 2

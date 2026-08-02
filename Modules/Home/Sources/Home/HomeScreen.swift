@@ -1,11 +1,23 @@
 import SwiftUI
 import Common
+import RealtimeKit
+import Combine
+
+struct CallRequest: Codable {
+    let channelName: String
+    let token: String
+}
 
 public struct HomeScreen: View {
     @State private var selectedTab: TabItem = .home
     @State private var isOnline: Bool = false
     @State private var hasIncomingRequest: Bool = false
     @State private var isCallActive: Bool = false
+    
+    // RealtimeKit Integration
+    @StateObject private var realtimeClient = RealtimeClient()
+    @State private var currentChannelName: String = ""
+    @State private var currentToken: String = ""
     
     public init() {}
     
@@ -19,15 +31,16 @@ public struct HomeScreen: View {
                 
                 StatusCardView(isOnline: $isOnline) { newValue in
                     if newValue {
-                        // Simulate receiving a request
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            if isOnline {
-                                withAnimation(.spring()) {
-                                    hasIncomingRequest = true
-                                }
-                            }
+                        // Connect to RealtimeKit
+                        Task {
+                            let url = URL(string: "wss://placeholder-socket-url.com")!
+                            try? await realtimeClient.connect(url: url, authToken: "PLACEHOLDER_TOKEN")
                         }
                     } else {
+                        // Disconnect from RealtimeKit
+                        Task {
+                            await realtimeClient.disconnect()
+                        }
                         withAnimation {
                             hasIncomingRequest = false
                         }
@@ -55,7 +68,17 @@ public struct HomeScreen: View {
             }
         }
         .fullScreenCover(isPresented: $isCallActive) {
-            VideoCallView()
+            VideoCallView(channelName: currentChannelName, token: currentToken)
+        }
+        // Listen to incoming requests via RealtimeKit when connected
+        .onReceive(realtimeClient.subscribe(topic: "/topic/provider/requests")) { envelope in
+            if let request = try? envelope.decodePayload(as: CallRequest.self) {
+                currentChannelName = request.channelName
+                currentToken = request.token
+                withAnimation(.spring()) {
+                    hasIncomingRequest = true
+                }
+            }
         }
     }
 }
