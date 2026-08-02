@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../Common"),
-        .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git", from: "4.3.0")
+        .package(path: "../AgoraKit")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,7 +25,7 @@ let package = Package(
             name: "Home",
             dependencies: [
                 "Common",
-                .product(name: "RtcBasic", package: "AgoraRtcEngine_iOS")
+                "AgoraKit"
             ]),
         .testTarget(
             name: "HomeTests",

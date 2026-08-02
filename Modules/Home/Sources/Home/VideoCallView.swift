@@ -1,16 +1,23 @@
 import SwiftUI
 import Common
+import AgoraKit
+import Combine
 
 public struct VideoCallView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var agoraManager = AgoraManager()
+    
+    // We instantiate the AgoraSession from AgoraKit
+    @State private var session = AgoraSession(appId: "YOUR_AGORA_APP_ID")
+    
     @State private var isConnecting = true
+    @State private var connectionState: AgoraConnectionState = .disconnected
+    @State private var remoteUid: Int? = nil
     
     // Injected parameters
     public var channelName: String
-    public var token: String?
+    public var token: String
     
-    public init(channelName: String = "TestChannel", token: String? = nil) {
+    public init(channelName: String = "TestChannel", token: String = "") {
         self.channelName = channelName
         self.token = token
     }
@@ -25,16 +32,39 @@ public struct VideoCallView: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
                                 isConnecting = false
-                                // Initialize Agora after connection overlay finishes
-                                agoraManager.initializeAndJoin(channel: channelName, token: token)
+                                // Initialize and join via AgoraSession
+                                Task {
+                                    do {
+                                        try await session.join(channelName: channelName, token: token, uid: 0, includeVideo: true)
+                                    } catch {
+                                        print("Error joining channel: \(error)")
+                                    }
+                                }
                             }
                         }
                     }
             } else {
-                ActiveCallView(agoraManager: agoraManager, onEndCall: {
-                    agoraManager.leaveChannel()
-                    dismiss()
+                ActiveCallView(session: session, remoteUid: remoteUid, onEndCall: {
+                    Task {
+                        try? await session.leave()
+                        dismiss()
+                    }
                 })
+            }
+        }
+        .onReceive(session.connectionStatePublisher) { state in
+            self.connectionState = state
+        }
+        .onReceive(session.remoteUserEventsPublisher) { event in
+            switch event {
+            case .joined(let user):
+                self.remoteUid = user.uid
+            case .left(let uid, _):
+                if self.remoteUid == uid {
+                    self.remoteUid = nil
+                }
+            default:
+                break
             }
         }
     }

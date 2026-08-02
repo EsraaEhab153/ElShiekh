@@ -1,5 +1,6 @@
 import SwiftUI
 import Common
+import AgoraKit
 
 public struct ConnectingView: View {
     public init() {}
@@ -12,11 +13,16 @@ public struct ConnectingView: View {
 }
 
 public struct ActiveCallView: View {
-    @ObservedObject var agoraManager: AgoraManager
+    var session: AgoraSessionManaging
+    var remoteUid: Int?
     var onEndCall: () -> Void
     
-    public init(agoraManager: AgoraManager, onEndCall: @escaping () -> Void) {
-        self.agoraManager = agoraManager
+    @State private var isMicMuted = false
+    @State private var isCameraOff = false
+    
+    public init(session: AgoraSessionManaging, remoteUid: Int?, onEndCall: @escaping () -> Void) {
+        self.session = session
+        self.remoteUid = remoteUid
         self.onEndCall = onEndCall
     }
     
@@ -24,11 +30,9 @@ public struct ActiveCallView: View {
         VStack {
             // Main Stage: Remote User or Waiting State
             ZStack(alignment: .topTrailing) {
-                if let remoteUid = agoraManager.remoteUserId {
-                    AgoraVideoCanvasView(uid: remoteUid, renderMode: .hidden) { canvas in
-                        agoraManager.setupRemoteVideo(to: canvas)
-                    }
-                    .ignoresSafeArea()
+                if let uid = remoteUid {
+                    AgoraVideoView(sessionManager: session, uid: uid)
+                        .ignoresSafeArea()
                 } else {
                     Rectangle()
                         .fill(Color.gray.opacity(0.3))
@@ -36,21 +40,22 @@ public struct ActiveCallView: View {
                 }
                 
                 // Picture-in-Picture: Local User
-                if !agoraManager.isCameraOff {
-                    AgoraVideoCanvasView(uid: 0, renderMode: .hidden) { canvas in
-                        agoraManager.setupLocalVideo(to: canvas)
-                    }
-                    .frame(width: 120, height: 160)
-                    .cornerRadius(12)
-                    .padding()
-                    .shadow(radius: 5)
+                if !isCameraOff {
+                    AgoraVideoView(sessionManager: session, uid: 0)
+                        .frame(width: 120, height: 160)
+                        .cornerRadius(12)
+                        .padding()
+                        .shadow(radius: 5)
                 }
             }
             
             // Bottom Controls
             HStack(spacing: 40) {
-                Button(action: { agoraManager.toggleMic() }) {
-                    CallControlButton(icon: agoraManager.isMicMuted ? "mic.slash.fill" : "mic.fill", 
+                Button(action: {
+                    isMicMuted.toggle()
+                    session.muteLocalAudio(isMicMuted)
+                }) {
+                    CallControlButton(icon: isMicMuted ? "mic.slash.fill" : "mic.fill", 
                                       color: .white.opacity(0.2))
                 }
                 
@@ -58,8 +63,11 @@ public struct ActiveCallView: View {
                     CallControlButton(icon: "phone.down.fill", color: Color.App.destructive)
                 }
                 
-                Button(action: { agoraManager.toggleCamera() }) {
-                    CallControlButton(icon: agoraManager.isCameraOff ? "video.slash.fill" : "video.fill", 
+                Button(action: {
+                    isCameraOff.toggle()
+                    session.enableLocalVideo(!isCameraOff)
+                }) {
+                    CallControlButton(icon: isCameraOff ? "video.slash.fill" : "video.fill", 
                                       color: .white.opacity(0.2))
                 }
             }
