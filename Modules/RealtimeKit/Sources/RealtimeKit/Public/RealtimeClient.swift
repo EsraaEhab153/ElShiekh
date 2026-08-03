@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public final class RealtimeClient: RealtimeConnecting,
+public final class RealtimeClient: ObservableObject, RealtimeConnecting,
     RealtimeTransportDelegate, @unchecked Sendable
 {
     private let transport: RealtimeTransportProtocol

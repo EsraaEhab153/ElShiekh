@@ -4,38 +4,29 @@
 import PackageDescription
 
 let package = Package(
-    name: "Home",
+    name: "NetworkKit",
     platforms: [
-            .iOS(.v17)
-        ],
+        .iOS(.v17)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Home",
-            targets: ["Home"]),
+            name: "NetworkKit",
+            targets: ["NetworkKit"]),
     ],
     dependencies: [
-        .package(path: "../Common"),
-        .package(path: "../AgoraKit"),
-        .package(path: "../RealtimeKit"),
-        .package(path: "../LiveSessionKit"),
-        .package(path: "../NetworkKit"),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.8.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Home",
-            dependencies: [
-                "Common",
-                "AgoraKit",
-                "RealtimeKit",
-                "LiveSessionKit",
-                "NetworkKit",
-            ]),
+            name: "NetworkKit",
+            dependencies: ["Alamofire"]
+        ),
         .testTarget(
-            name: "HomeTests",
-            dependencies: ["Home"]),
+            name: "NetworkKitTests",
+            dependencies: ["NetworkKit"]
+        ),
     ]
 )
-
