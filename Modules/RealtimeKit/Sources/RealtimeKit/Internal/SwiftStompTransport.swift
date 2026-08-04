@@ -43,18 +43,22 @@ final class SwiftStompTransport: NSObject, RealtimeTransportProtocol, SwiftStomp
     }
 
     func connect(url: URL, headers: [String: String]?) {
+        print("🔌 [STOMP] connect() — url=\(url)")
         let client = SwiftStomp(host: url, headers: headers)
         client.delegate = self
         client.autoReconnect = autoReconnect
         self.stomp = client
 
         client.connect()
+        print("🔌 [STOMP] client.connect() called (async handshake)")
     }
 
     func disconnect() {
+        print("🔌 [STOMP] disconnect() called")
         stomp?.disconnect()
         stomp = nil
         isConnectedBefore = false
+        print("🔌 [STOMP] disconnect() completed — stomp=nil")
     }
 
     func enableAutoPing(interval: TimeInterval) {
@@ -72,30 +76,40 @@ final class SwiftStompTransport: NSObject, RealtimeTransportProtocol, SwiftStomp
     // MARK: - SwiftStompDelegate
 
     func onConnect(swiftStomp: SwiftStomp, connectType: StompConnectType) {
+        print("🟢 [STOMP] onConnect — connectType=\(connectType), isConnectedBefore=\(isConnectedBefore)")
         let isReconnect = isConnectedBefore || (connectType == .toSocketEndpoint)
         isConnectedBefore = true
         delegate?.transportDidConnect(isReconnect: isReconnect)
     }
 
     func onDisconnect(swiftStomp: SwiftStomp, disconnectType: StompDisconnectType) {
+        print("🔴 [STOMP] onDisconnect — disconnectType=\(disconnectType)")
+        // FIX: .fromStomp is an intentional STOMP-level disconnect (clean).
+        // .fromSocket is an unexpected socket-level drop (unclean → triggers reconnect).
         let wasClean: Bool
         switch disconnectType {
-        case .fromStomp, .fromSocket:
+        case .fromStomp:
+            wasClean = true
+        case .fromSocket:
             wasClean = false
         @unknown default:
             wasClean = false
         }
+        print("🔴 [STOMP] wasClean=\(wasClean)")
         delegate?.transportDidDisconnect(wasClean: wasClean)
     }
 
     func onMessageReceived(swiftStomp: SwiftStomp, message: Any?, messageId: String, destination: String, headers: [String: String]) {
+        print("📩 [STOMP] onMessageReceived — destination=\(destination), messageId=\(messageId)")
         delegate?.transportDidReceiveMessage(destination: destination, body: message, headers: headers)
     }
 
     func onError(swiftStomp: SwiftStomp, briefDescription: String, fullDescription: String?, receiptId: String?, type: StompErrorType) {
+        print("❌ [STOMP] onError — brief=\(briefDescription), full=\(fullDescription ?? "nil"), type=\(type)")
         let isAuthError = briefDescription.lowercased().contains("401") ||
             briefDescription.lowercased().contains("unauthorized") ||
             (fullDescription?.lowercased().contains("unauthorized") ?? false)
+        print("❌ [STOMP] isAuthError=\(isAuthError)")
         delegate?.transportDidEncounterError(description: fullDescription ?? briefDescription, isAuthError: isAuthError)
     }
 

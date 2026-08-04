@@ -50,8 +50,10 @@ public final class RealtimeClient: ObservableObject, RealtimeConnecting,
     }
 
     public func connect(url: URL, authToken: String) async throws {
+        print("🟢 [RealtimeClient] connect() called — url=\(url), tokenEmpty=\(authToken.isEmpty)")
         guard !authToken.isEmpty else {
             let error = RealtimeError.authenticationRejected
+            print("🟢 [RealtimeClient] ❌ Empty auth token — sending .failed(.authenticationRejected)")
             stateSubject.send(.failed(error))
             throw error
         }
@@ -64,14 +66,18 @@ public final class RealtimeClient: ObservableObject, RealtimeConnecting,
             "passcode": authToken,
         ]
 
+        print("🟢 [RealtimeClient] Initiating transport.connect()...")
         transport.connect(url: url, headers: headers)
         transport.enableAutoPing(interval: 10)
+        print("🟢 [RealtimeClient] connect() returned (handshake is async)")
     }
 
     public func disconnect() async {
+        print("🔴 [RealtimeClient] disconnect() called")
         transport.disconnect()
         registry.clear()
         stateSubject.send(.disconnected)
+        print("🔴 [RealtimeClient] disconnect() completed — registry cleared, state=.disconnected")
     }
 
     public func subscribe(topic: String) -> AnyPublisher<
@@ -103,7 +109,9 @@ public final class RealtimeClient: ObservableObject, RealtimeConnecting,
     // MARK: - RealtimeTransportDelegate
 
     func transportDidConnect(isReconnect: Bool) {
+        print("🟢 [RealtimeClient] transportDidConnect (isReconnect=\(isReconnect))")
         let activeTopics = registry.activeTopics()
+        print("🟢 [RealtimeClient] Re-subscribing to \(activeTopics.count) topic(s): \(activeTopics)")
         for topic in activeTopics {
             transport.subscribe(to: topic)
         }
@@ -113,13 +121,17 @@ public final class RealtimeClient: ObservableObject, RealtimeConnecting,
         }
 
         stateSubject.send(.connected)
+        print("🟢 [RealtimeClient] State → .connected")
     }
 
     func transportDidDisconnect(wasClean: Bool) {
+        print("🔴 [RealtimeClient] transportDidDisconnect (wasClean=\(wasClean))")
         if wasClean {
             stateSubject.send(.disconnected)
+            print("🔴 [RealtimeClient] State → .disconnected")
         } else {
             stateSubject.send(.reconnecting(attempt: 1))
+            print("🔴 [RealtimeClient] State → .reconnecting(attempt: 1)")
         }
     }
 
@@ -128,24 +140,30 @@ public final class RealtimeClient: ObservableObject, RealtimeConnecting,
         body: Any?,
         headers: [String: String]
     ) {
+        print("📩 [RealtimeClient] didReceiveMessage — destination=\(destination)")
         do {
             let envelope = try RealtimeFrameDecoder.decode(
                 body: body,
                 headers: headers
             )
             registry.publish(envelope: envelope, to: destination)
+            print("📩 [RealtimeClient] ✅ Published envelope (eventType=\(envelope.eventType)) to destination")
         } catch {
+            print("📩 [RealtimeClient] ❌ Failed to decode message: \(error)")
             stateSubject.send(.failed(.malformedEnvelope))
         }
     }
 
     func transportDidEncounterError(description: String, isAuthError: Bool) {
+        print("❌ [RealtimeClient] transportError — \(description), isAuth=\(isAuthError)")
         if isAuthError {
             stateSubject.send(.failed(.authenticationRejected))
+            print("❌ [RealtimeClient] State → .failed(.authenticationRejected)")
         } else {
             stateSubject.send(
                 .failed(.transportError(description: description))
             )
+            print("❌ [RealtimeClient] State → .failed(.transportError)")
         }
     }
 }

@@ -68,11 +68,20 @@ public struct StatusCardView: View {
             }
             
             // Right Toggle
-            Toggle("", isOn: $isOnline)
+            // FIX: Custom Binding ensures onToggle only fires on USER taps,
+            // not on programmatic changes from the ViewModel (e.g., API failure reverts).
+            // This eliminates the re-entrant onChange → double API call loop.
+            Toggle("", isOn: Binding(
+                get: { isOnline },
+                set: { newValue in
+                    print("🎚️ [StatusCardView] Toggle tapped by user → \(newValue)")
+                    isOnline = newValue
+                    onToggle(newValue)
+                }
+            ))
                 .labelsHidden()
                 .tint(Color.App.primary)
                 .padding(.leading, 12)
-                .onChange(of: isOnline, perform: onToggle)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
