@@ -46,6 +46,7 @@
 		CADE668E301DFD22006714F5 /* ElShiekhUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ElShiekhUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CADE6692301DFD22006714F5 /* ElShiekhUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElShiekhUITests.swift; sourceTree = "<group>"; };
 		CADE6694301DFD22006714F5 /* ElShiekhUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElShiekhUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +76,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA234E923020E2FF00312E6A /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		CA234E933020E31C00312E6A /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		CADE666B301DFD1F006714F5 = {
 			isa = PBXGroup;
 			children = (
@@ -99,7 +116,8 @@
 		CADE6676301DFD1F006714F5 /* ElShiekh */ = {
 			isa = PBXGroup;
 			children = (
-				CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */,
+				CA234E933020E31C00312E6A /* Configuration */,
+				CA234E923020E2FF00312E6A /* Application */,
 				CADE6679301DFD1F006714F5 /* ContentView.swift */,
 				CADE667B301DFD21006714F5 /* Assets.xcassets */,
 				CADE667D301DFD21006714F5 /* Preview Content */,
@@ -313,6 +331,7 @@
 /* Begin XCBuildConfiguration section */
 		CADE6696301DFD22006714F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -376,6 +395,7 @@
 		};
 		CADE6697301DFD22006714F5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -432,6 +452,7 @@
 		};
 		CADE6699301DFD22006714F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -440,6 +461,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ElShiekh/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -462,6 +484,7 @@
 		};
 		CADE669A301DFD22006714F5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -470,6 +493,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ElShiekh/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -492,6 +516,7 @@
 		};
 		CADE669C301DFD22006714F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -511,6 +536,7 @@
 		};
 		CADE669D301DFD22006714F5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -530,6 +556,7 @@
 		};
 		CADE669F301DFD22006714F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -547,6 +574,7 @@
 		};
 		CADE66A0301DFD22006714F5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

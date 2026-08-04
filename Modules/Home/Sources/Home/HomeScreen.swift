@@ -14,11 +14,11 @@ import Combine
 
 // MARK: - Incoming Request Payload (from /topic/provider/requests)
 
-struct IncomingCallRequest: Codable {
-    let circleId: String
-    let channelName: String?
-    let token: String?
-    let studentName: String?
+public struct IncomingCallRequest: Codable, Sendable {
+    public let circleId: String
+    public let channelName: String?
+    public let token: String?
+    public let studentName: String?
 }
 
 // MARK: - HomeScreen
@@ -51,6 +51,11 @@ public struct HomeScreen: View {
 
     // MARK: Combine
     @State private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: Dynamic Sheikh ID
+    private var currentSheikhId: String {
+        return UserDefaults.standard.string(forKey: "loggedInSheikhId") ?? "DEFAULT_ID"
+    }
 
     public init() {}
 
@@ -120,7 +125,7 @@ public struct HomeScreen: View {
                 agoraToken: sessionAgoraToken,
                 uid: 0,
                 isHost: true,
-                agoraAppId: "YOUR_AGORA_APP_ID",
+                agoraAppId: AppConfig.agoraAppId,
                 realtimeClient: realtimeClient,
                 networkService: networkService,
                 onLeft: { isCallActive = false },
@@ -128,7 +133,7 @@ public struct HomeScreen: View {
             )
         }
         // MARK: - Socket Subscription (incoming requests)
-        .onReceive(realtimeClient.subscribe(topic: "/topic/provider/requests")) { envelope in
+        .onReceive(realtimeClient.subscribe(topic: "/topic/sheikhs/\(currentSheikhId)/requests")) { envelope in
             handleIncomingRequestEnvelope(envelope)
         }
     }
@@ -136,20 +141,47 @@ public struct HomeScreen: View {
     // MARK: - Availability Toggle
 
     private func handleAvailabilityToggle(_ newValue: Bool) {
-        if newValue {
-            Task {
-                let url = URL(string: "wss://almahir-production.up.railway.app/ws")!
-                let token = AppRequestInterceptors.shared.tokenProvider?() ?? ""
-                try? await realtimeClient.connect(url: url, authToken: token)
+        let status: ProviderAvailabilityStatus = newValue ? .available : .offline
+        let endpoint = InstantMeetingEndpoints.updateAvailability(status: status)
+        
+        networkService.requestWithoutData(endpoint)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Failed to update status on backend: \(error.localizedDescription)")
+                    self.isOnline = !newValue
+                }
+            }, receiveValue: { _ in
+                if newValue {
+                    connectSocket()
+                } else {
+                    disconnectSocket()
+                }
+            })
+            .store(in: &cancellables)
+    }
+    
+    private func connectSocket() {
+        Task {
+            let url = URL(string: "wss://almahir-production.up.railway.app/ws")!
+            let token = AppRequestInterceptors.shared.tokenProvider?() ?? ""
+            do {
+                try await realtimeClient.connect(url: url, authToken: token)
+                print("STOMP Connected to \(url)")
+            } catch {
+                print("Failed to connect STOMP: \(error)")
+                self.isOnline = false 
             }
-        } else {
-            Task {
-                await realtimeClient.disconnect()
-            }
-            withAnimation {
-                hasIncomingRequest = false
-                incomingRequest = nil
-            }
+        }
+    }
+    
+    private func disconnectSocket() {
+        Task {
+            await realtimeClient.disconnect()
+        }
+        withAnimation {
+            hasIncomingRequest = false
+            incomingRequest = nil
         }
     }
 
@@ -198,11 +230,7 @@ public struct HomeScreen: View {
                     sessionChannelName = channelName
                     sessionAgoraToken = agoraToken
 
-                    // STEP 2 & 3: Present LiveSessionKit which internally handles:
-                    //   - STOMP subscribe to /topic/circles/{circleId}/host
-                    //   - Agora joinChannel with the fetched credentials
-                    // STEP 4: End call → LiveSessionKit's endUseCase posts to
-                    //   POST v1/circles/{circleId}/end automatically
+                    // STEP 2 & 3: Present LiveSessionKit
                     isAccepting = false
                     hasIncomingRequest = false
                     incomingRequest = nil
@@ -215,13 +243,20 @@ public struct HomeScreen: View {
     // MARK: - Reject Flow
 
     private func rejectIncomingRequest() {
+        // لو الباك إند محتاج إنك تبعتيله رفض، هنستخدم الـ Endpoint هنا
+        guard let request = incomingRequest else { return }
+        
+        let endpoint = InstantMeetingEndpoints.declineRequest(requestId: request.circleId)
+        networkService.requestWithoutData(endpoint)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+                print("Request declined successfully on backend.")
+            })
+            .store(in: &cancellables)
+            
         withAnimation {
             hasIncomingRequest = false
             incomingRequest = nil
         }
     }
-}
-
-#Preview {
-    HomeScreen()
 }

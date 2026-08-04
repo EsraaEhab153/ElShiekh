@@ -54,3 +54,5 @@ temp/
 # Editor / IDE Specific
 .idea/
 .vscode/
+# Configuration
+config/
