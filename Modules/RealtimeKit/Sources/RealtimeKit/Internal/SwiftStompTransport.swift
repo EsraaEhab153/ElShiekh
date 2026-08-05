@@ -44,7 +44,8 @@ final class SwiftStompTransport: NSObject, RealtimeTransportProtocol, SwiftStomp
 
     func connect(url: URL, headers: [String: String]?) {
         print("🔌 [STOMP] connect() — url=\(url)")
-        let client = SwiftStomp(host: url, headers: headers)
+        // Pass the headers to BOTH the STOMP frame and the initial HTTP WebSocket upgrade request
+        let client = SwiftStomp(host: url, headers: headers, httpConnectionHeaders: headers)
         client.delegate = self
         client.autoReconnect = autoReconnect
         self.stomp = client

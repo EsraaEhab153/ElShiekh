@@ -150,10 +150,8 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Socket Management
 
     private func connectSocket() {
-        // FIX: Task inherits @MainActor from the class — all @State/@Published
-        // mutations inside are guaranteed to be on the main thread.
         Task {
-            let url = URL(string: "wss://almahir-production.up.railway.app/ws")!
+            let url = URL(string: "wss://almahir-production.up.railway.app/ws/websocket")!
             let token = AppRequestInterceptors.shared.tokenProvider?() ?? ""
             print("🔌 [HomeVM] connectSocket — url=\(url), tokenEmpty=\(token.isEmpty)")
 
@@ -164,10 +162,10 @@ final class HomeViewModel: ObservableObject {
             } catch {
                 print("🔌 [HomeVM] ❌ connect() threw: \(error)")
                 // The connectionStatePublisher observer handles reverting isOnline
-                // (RealtimeClient sends .failed before throwing)
             }
         }
     }
+
 
     private func disconnectSocket() {
         Task {
