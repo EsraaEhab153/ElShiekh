@@ -46,9 +46,13 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Dynamic Sheikh ID
 
+//    var currentSheikhId: String {
+//        UserDefaults.standard.string(forKey: "loggedInSheikhId") ?? "DEFAULT_ID"
+//    }
     var currentSheikhId: String {
-        UserDefaults.standard.string(forKey: "loggedInSheikhId") ?? "DEFAULT_ID"
+        return "aa6f3d89-c484-47ec-8abd-001967908123"
     }
+    //56888525-b97e-4fde-8ed2-f5b95b85e4c3
 
     // MARK: - Init
 
@@ -205,23 +209,23 @@ final class HomeViewModel: ObservableObject {
         isAccepting = true
         acceptError = nil
 
-        // Fetch session credentials from REST API
-        networkService.request(LiveSessionEndpoints.getCircleDetail(circleId: request.circleId))
+        let endpoint = InstantMeetingEndpoints.acceptRequest(requestId: request.circleId)
+        networkService.request(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        print("📞 [HomeVM] ❌ getCircleDetail failed: \(error.localizedDescription)")
+                        print("📞 [HomeVM] ❌ acceptRequest failed: \(error.localizedDescription)")
                         self?.isAccepting = false
-                        self?.acceptError = "Failed to fetch session: \(error.localizedDescription)"
+                        self?.acceptError = "Failed to accept session: \(error.localizedDescription)"
                     }
                 },
-                receiveValue: { [weak self] (detail: CircleDetailDTO) in
+                receiveValue: { [weak self] (response: AcceptResponse) in
                     guard let self else { return }
-                    let channelName = detail.channelName ?? request.channelName ?? ""
-                    let agoraToken = detail.resolvedToken ?? request.token ?? ""
+                    let channelName = response.channelName
+                    let agoraToken = response.agoraToken
 
-                    print("📞 [HomeVM] CircleDetail — channel=\"\(channelName)\", tokenEmpty=\(agoraToken.isEmpty)")
+                    print("📞 [HomeVM] AcceptResponse — channel=\"\(channelName)\", tokenEmpty=\(agoraToken.isEmpty)")
 
                     guard !channelName.isEmpty, !agoraToken.isEmpty else {
                         print("📞 [HomeVM] ❌ Invalid credentials")

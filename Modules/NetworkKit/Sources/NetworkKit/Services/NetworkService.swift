@@ -41,7 +41,8 @@ public final class NetworkService: NetworkServiceProtocol, @unchecked Sendable {
                 method: endpoint.method,
                 parameters: endpoint.parameters,
                 encoding: endpoint.encoding,
-                headers: endpoint.headers
+                headers: endpoint.headers,
+                interceptor: AppRequestInterceptors.shared
             )
         }
 
@@ -99,7 +100,8 @@ public final class NetworkService: NetworkServiceProtocol, @unchecked Sendable {
                 method: endpoint.method,
                 parameters: endpoint.parameters,
                 encoding: endpoint.encoding,
-                headers: endpoint.headers
+                headers: endpoint.headers,
+                interceptor: AppRequestInterceptors.shared
             )
         }
 

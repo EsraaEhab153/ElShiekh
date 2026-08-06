@@ -11,7 +11,7 @@ import NetworkKit
 @main
 struct ElShiekhApp: App {
     init() {
-            let validTestToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaGVpa2hAdGVzdC5jb20iLCJpYXQiOjE3ODU4NTM3NTYsImV4cCI6MTc4NTk0MDE1Niwicm9sZXMiOlsiUk9MRV9TSEVJS0giXSwidHlwZSI6ImFjY2VzcyJ9.0X0Byu8qzK2IMPjZrqOBbFPzvEnlHS3jFL_j3SK6uOlVPFMp-zejd3XVuhwWIJJis7R9jLni0AiFX25Hy1pi3Q"
+            let validTestToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2hhbWVkQHRlc3QuY29tIiwiaWF0IjoxNzg1OTY0MzcxLCJleHAiOjE3ODYwNTA3NzEsInJvbGVzIjpbIlJPTEVfU0hFSUtIIl0sInR5cGUiOiJhY2Nlc3MifQ.bEFKOh5bHZ1BB8-Z3_AtgonRegVNLmG63fqYwVyodm8lgBEQ6drOmitTt9jkJdmAQBF6z1mYkS1GjULcf5LxFQ"
             
             AppRequestInterceptors.shared.tokenProvider = {
                 return validTestToken
