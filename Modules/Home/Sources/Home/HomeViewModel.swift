@@ -50,7 +50,7 @@ final class HomeViewModel: ObservableObject {
 //        UserDefaults.standard.string(forKey: "loggedInSheikhId") ?? "DEFAULT_ID"
 //    }
     var currentSheikhId: String {
-        return "aa6f3d89-c484-47ec-8abd-001967908123"
+        return "482fbea4-eb85-4474-aae6-0cbf7649ac2f"
     }
     //56888525-b97e-4fde-8ed2-f5b95b85e4c3
 

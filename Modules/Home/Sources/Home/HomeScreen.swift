@@ -13,11 +13,13 @@ import NetworkKit
 
 // MARK: - Incoming Request Payload (from /topic/provider/requests)
 
-public struct IncomingCallRequest: Codable, Sendable {
-    public let circleId: String
-    public let channelName: String?
-    public let token: String?
-    public let studentName: String?
+struct IncomingCallRequest: Codable {
+    let requestId: String
+    let studentId: String
+    let studentName: String
+    let studentEmail: String
+    let requestedAt: String
+    let expiresAt: String
 }
 
 // MARK: - HomeScreen
