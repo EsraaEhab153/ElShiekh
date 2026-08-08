@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CAC275B9302665BC002F9485 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CADE6674301DFD1F006714F5 /* ElShiekh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElShiekh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElShiekhApp.swift; sourceTree = "<group>"; };
 		CADE6679301DFD1F006714F5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,6 +117,7 @@
 		CADE6676301DFD1F006714F5 /* ElShiekh */ = {
 			isa = PBXGroup;
 			children = (
+				CAC275B9302665BC002F9485 /* Info.plist */,
 				CA234E933020E31C00312E6A /* Configuration */,
 				CA234E923020E2FF00312E6A /* Application */,
 				CADE6679301DFD1F006714F5 /* ContentView.swift */,
@@ -462,6 +464,7 @@
 				DEVELOPMENT_TEAM = DBLRPPJW4P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ElShiekh/Info.plist;
 				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";
@@ -495,6 +498,7 @@
 				DEVELOPMENT_TEAM = DBLRPPJW4P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ElShiekh/Info.plist;
 				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";

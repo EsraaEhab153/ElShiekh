@@ -15,11 +15,28 @@ import NetworkKit
 
 struct IncomingCallRequest: Codable {
     let requestId: String
-    let studentId: String
-    let studentName: String
-    let studentEmail: String
-    let requestedAt: String
-    let expiresAt: String
+    let studentId: String?
+    let studentName: String?
+    let studentEmail: String?
+    let requestedAt: String?
+    let expiresAt: String?
+}
+
+struct PendingRequestsResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: PendingRequestsData
+    let timestamp: String
+}
+
+struct PendingRequestsData: Codable {
+    let content: [IncomingCallRequest]
+    let pageNumber: Int
+    let pageSize: Int
+    let totalElements: Int
+    let totalPages: Int
+    let isLast: Bool
+    let isFirst: Bool
 }
 
 // MARK: - HomeScreen
@@ -95,7 +112,7 @@ public struct HomeScreen: View {
         // MARK: - Full Screen Cover → LiveSessionKit
         .fullScreenCover(isPresented: $viewModel.isCallActive) {
             startLiveSession(
-                circleId: viewModel.sessionCircleId,
+                circleId: viewModel.sessionRequestId, 
                 channelName: viewModel.sessionChannelName,
                 agoraToken: viewModel.sessionAgoraToken,
                 uid: 0,

@@ -30,7 +30,7 @@ final class HomeViewModel: ObservableObject {
     @Published var acceptError: String?
 
     /// Session credentials (fetched from REST before presenting call)
-    @Published var sessionCircleId: String = ""
+    @Published var sessionRequestId: String = "" // تم تغييرها من sessionCircleId لـ sessionRequestId
     @Published var sessionChannelName: String = ""
     @Published var sessionAgoraToken: String = ""
 
@@ -40,31 +40,22 @@ final class HomeViewModel: ObservableObject {
     let networkService: NetworkServiceProtocol = NetworkService.shared
 
     // MARK: - Combine
-    // FIX: Stored as a regular class property — never destroyed by SwiftUI struct re-creation.
-    // This was the #1 root cause: @State var cancellables on a struct silently cancelled subscriptions.
     private var cancellables = Set<AnyCancellable>()
-
+    private var requestSubscription: AnyCancellable?
     // MARK: - Dynamic Sheikh ID
 
-//    var currentSheikhId: String {
-//        UserDefaults.standard.string(forKey: "loggedInSheikhId") ?? "DEFAULT_ID"
-//    }
     var currentSheikhId: String {
         return "482fbea4-eb85-4474-aae6-0cbf7649ac2f"
     }
-    //56888525-b97e-4fde-8ed2-f5b95b85e4c3
 
     // MARK: - Init
 
     init() {
         print("🏠 [HomeVM] init — sheikhId=\(currentSheikhId)")
         setupConnectionStateObserver()
-        setupIncomingRequestSubscription()
     }
 
     // MARK: - Connection State Observer
-    // FIX: Observes connectionStatePublisher to auto-revert toggle on async WebSocket failures.
-    // Previously, nothing observed connection state, so async failures were completely silent.
 
     private func setupConnectionStateObserver() {
         realtimeClient.connectionStatePublisher
@@ -95,15 +86,16 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Incoming Request Subscription
 
     private func setupIncomingRequestSubscription() {
+        requestSubscription?.cancel()
+        
         let topic = "/topic/sheikhs/\(currentSheikhId)/requests"
         print("📡 [HomeVM] Subscribing to topic: \(topic)")
 
-        realtimeClient.subscribe(topic: topic)
+        requestSubscription = realtimeClient.subscribe(topic: topic)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] envelope in
                 self?.handleIncomingRequestEnvelope(envelope)
             }
-            .store(in: &cancellables)
     }
 
     // MARK: - Availability Toggle
@@ -111,10 +103,7 @@ final class HomeViewModel: ObservableObject {
     func handleAvailabilityToggle(_ newValue: Bool) {
         print("🔄 [HomeVM] handleAvailabilityToggle(\(newValue)), current isOnline=\(isOnline)")
 
-        // Optimistic UI update — the Toggle already shows the new value via the custom Binding.
-        // We set it here so the ViewModel state is consistent.
         isOnline = newValue
-
         let status: ProviderAvailabilityStatus = newValue ? .available : .offline
         let endpoint = InstantMeetingEndpoints.updateAvailability(status: status)
 
@@ -123,18 +112,13 @@ final class HomeViewModel: ObservableObject {
         networkService.requestWithoutData(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
-                guard let self else {
-                    print("🔄 [HomeVM] ⚠️ Self deallocated in API completion")
-                    return
-                }
+                guard let self else { return }
                 switch completion {
                 case .finished:
                     print("🔄 [HomeVM] API subscription completed normally")
                 case .failure(let error):
                     print("🔄 [HomeVM] ❌ API FAILED: \(error.localizedDescription)")
                     print("🔄 [HomeVM] Reverting isOnline → \(!newValue)")
-                    // FIX: This revert does NOT re-trigger handleAvailabilityToggle because
-                    // StatusCardView uses a custom Binding whose setter only fires on USER taps.
                     self.isOnline = !newValue
                 }
             }, receiveValue: { [weak self] success in
@@ -162,14 +146,15 @@ final class HomeViewModel: ObservableObject {
             do {
                 try await realtimeClient.connect(url: url, authToken: token)
                 print("🔌 [HomeVM] connect() returned (non-blocking handshake initiated)")
+                
+                self.setupIncomingRequestSubscription()
                 self.fetchPendingRequests()
+                
             } catch {
                 print("🔌 [HomeVM] ❌ connect() threw: \(error)")
-                // The connectionStatePublisher observer handles reverting isOnline
             }
         }
     }
-
 
     private func disconnectSocket() {
         Task {
@@ -185,31 +170,40 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Incoming Request Handler
 
     private func handleIncomingRequestEnvelope(_ envelope: RealtimeEventEnvelope) {
-        print("📨 [HomeVM] Received envelope, eventType=\(envelope.eventType)")
-        guard let request = try? envelope.decodePayload(as: IncomingCallRequest.self) else {
-            print("📨 [HomeVM] ❌ Failed to decode IncomingCallRequest from payload")
-            return
+            print("📨 [HomeVM] Received envelope, eventType=\(envelope.eventType)")
+            
+            if envelope.eventType == "SHEIKH_MEETING_REQUEST_REMOVED" || envelope.eventType == "SHEIKH_MEETING_REQUEST_CANCELLED" {
+                print("📨 [HomeVM] 🚫 Request removed by student. Hiding UI.")
+                withAnimation(.spring()) {
+                    self.hasIncomingRequest = false
+                    self.incomingRequest = nil
+                }
+                return
+            }
+            
+            do {
+                let request = try envelope.decodePayload(as: IncomingCallRequest.self)
+                print("📨 [HomeVM] ✅ Decoded request: requestId=\(request.requestId), student=\(request.studentName ?? "مجهول")")
+                
+                self.incomingRequest = request
+                withAnimation(.spring()) {
+                    self.hasIncomingRequest = true
+                }
+            } catch {
+                print("📨 [HomeVM] ❌ Decode error details: \(error)")
+            }
         }
-        print("📨 [HomeVM] ✅ Decoded request: circleId=\(request.circleId), student=\(request.studentName ?? "nil")")
-        incomingRequest = request
-        withAnimation(.spring()) {
-            hasIncomingRequest = true
-        }
-    }
 
-    // MARK: - Accept Flow (REST → Credentials → RTC)
+    // MARK: - Accept Flow
 
     func acceptIncomingRequest() {
-        guard let request = incomingRequest else {
-            print("📞 [HomeVM] acceptIncomingRequest called but incomingRequest is nil")
-            return
-        }
+        guard let request = incomingRequest else { return }
 
-        print("📞 [HomeVM] Accepting request: circleId=\(request.circleId)")
+        print("📞 [HomeVM] Accepting request: requestId=\(request.requestId)")
         isAccepting = true
         acceptError = nil
 
-        let endpoint = InstantMeetingEndpoints.acceptRequest(requestId: request.circleId)
+        let endpoint = InstantMeetingEndpoints.acceptRequest(requestId: request.requestId)
         networkService.request(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(
@@ -235,7 +229,7 @@ final class HomeViewModel: ObservableObject {
                     }
 
                     // Store resolved credentials
-                    self.sessionCircleId = request.circleId
+                    self.sessionRequestId = request.requestId
                     self.sessionChannelName = channelName
                     self.sessionAgoraToken = agoraToken
 
@@ -253,14 +247,11 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Reject Flow
 
     func rejectIncomingRequest() {
-        guard let request = incomingRequest else {
-            print("📞 [HomeVM] rejectIncomingRequest called but incomingRequest is nil")
-            return
-        }
+        guard let request = incomingRequest else { return }
 
-        print("📞 [HomeVM] Rejecting request: circleId=\(request.circleId)")
+        print("📞 [HomeVM] Rejecting request: requestId=\(request.requestId)")
 
-        let endpoint = InstantMeetingEndpoints.declineRequest(requestId: request.circleId)
+        let endpoint = InstantMeetingEndpoints.declineRequest(requestId: request.requestId)
         networkService.requestWithoutData(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -284,24 +275,21 @@ final class HomeViewModel: ObservableObject {
         print("📋 [HomeVM] Fetching pending requests...")
         let endpoint = InstantMeetingEndpoints.getPendingRequests
 
+        // هنا بنستقبل Response كامل متغلف في PendingRequestsResponse
         networkService.request(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
                     print("📋 [HomeVM] ❌ Fetch pending failed: \(error.localizedDescription)")
                 }
-            }, receiveValue: { [weak self] (requests: [SheikhMeetingRequestEvent]) in
+            }, receiveValue: { [weak self] (response: PendingRequestsResponse) in
                 guard let self else { return }
+                
+                let requests = response.data.content
                 print("📋 [HomeVM] ✅ Received \(requests.count) pending request(s)")
+                
                 if let firstRequest = requests.first {
-                    let mappedRequest = IncomingCallRequest(
-                        circleId: firstRequest.requestId,
-                        channelName: "",
-                        token: "",
-                        studentName: firstRequest.studentName ?? "طالب"
-                    )
-
-                    self.incomingRequest = mappedRequest
+                    self.incomingRequest = firstRequest
                     withAnimation(.spring()) {
                         self.hasIncomingRequest = true
                     }
