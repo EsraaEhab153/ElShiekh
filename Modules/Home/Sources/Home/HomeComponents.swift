@@ -134,7 +134,7 @@ public struct IncomingRequestCardView: View {
                         .padding(.vertical, 12)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.App.success)
+                                .fill(Color.App.primary)
                         )
                 }
             }
