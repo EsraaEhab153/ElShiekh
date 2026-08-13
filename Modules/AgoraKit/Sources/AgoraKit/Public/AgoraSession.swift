@@ -74,8 +74,12 @@ public final class AgoraSession: AgoraSessionManaging {
     }
 
     deinit {
+        agoraEngine?.stopPreview()
+        agoraEngine?.disableVideo()
+        agoraEngine?.disableAudio()
         agoraEngine?.leaveChannel(nil)
         agoraEngine = nil
+        AgoraRtcEngineKit.destroy()
     }
 
     // MARK: - Engine Setup
@@ -168,7 +172,11 @@ public final class AgoraSession: AgoraSessionManaging {
     public func leave() async throws {
         guard let engine = agoraEngine else { return }
         engine.stopPreview()
+        engine.disableVideo()
+        engine.disableAudio()
         let result = engine.leaveChannel(nil)
+        agoraEngine = nil
+        AgoraRtcEngineKit.destroy()
         if result == 0 {
             delegateProxy.connectionStateSubject.send(.disconnected)
         } else {
@@ -184,7 +192,9 @@ public final class AgoraSession: AgoraSessionManaging {
         if enabled {
             agoraEngine?.enableVideo()
             agoraEngine?.enableLocalVideo(true)
+            agoraEngine?.startPreview()
         } else {
+            agoraEngine?.stopPreview()
             agoraEngine?.enableLocalVideo(false)
         }
     }
