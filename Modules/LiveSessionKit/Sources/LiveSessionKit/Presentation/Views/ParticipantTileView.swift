@@ -7,25 +7,85 @@
 
 import SwiftUI
 import Common
+import UIKit
+import Combine
+import AgoraKit
+
+
+public struct LiveSessionVideoView: UIViewRepresentable {
+    let repository: LiveSessionRepositoryProtocol
+    let uid: Int?
+
+    public class Coordinator {
+        var cancellable: AnyCancellable?
+    }
+
+    public func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    public func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .black
+        
+        bindCanvas(to: view)
+
+        let localUid = self.uid
+        let localRepo = self.repository
+
+        context.coordinator.cancellable = repository.connectionStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak view] state in
+                guard let view = view else { return }
+                if let uid = localUid, uid != 0 {
+                    _ = localRepo.setupRemoteVideoCanvas(view, forUid: uid)
+                } else {
+                    _ = localRepo.setupLocalVideoCanvas(view)
+                }
+            }
+
+        return view
+    }
+
+    public func updateUIView(_ uiView: UIView, context: Context) {
+        bindCanvas(to: uiView)
+    }
+
+    private func bindCanvas(to view: UIView) {
+        if let uid = uid, uid != 0 {
+            _ = repository.setupRemoteVideoCanvas(view, forUid: uid)
+        } else {
+            _ = repository.setupLocalVideoCanvas(view)
+        }
+    }
+}
 
 public struct ParticipantTileView: View {
     @Environment(\.dsColors) private var dsColors
     public let participant: SessionParticipant
+    public let repository: LiveSessionRepositoryProtocol?
 
-    public init(participant: SessionParticipant) {
+    public init(participant: SessionParticipant, repository: LiveSessionRepositoryProtocol? = nil) {
         self.participant = participant
+        self.repository = repository
     }
 
     public var body: some View {
         VStack(spacing: DSSpacing.sm) {
             ZStack {
-                Circle()
-                    .fill(dsColors.primaryContainer)
-                    .frame(width: 64, height: 64)
+                if participant.isVideoEnabled, let repository = repository {
+                    LiveSessionVideoView(repository: repository, uid: participant.uid)
+                        .frame(width: 64, height: 64)
+                        .clipShape(Circle())
+                } else {
+                    Circle()
+                        .fill(dsColors.primaryContainer)
+                        .frame(width: 64, height: 64)
 
-                Text(initials(from: participant.name))
-                    .dsFont(DSTypography.headlineMedium)
-                    .foregroundColor(dsColors.primary)
+                    Text(initials(from: participant.name))
+                        .dsFont(DSTypography.headlineMedium)
+                        .foregroundColor(dsColors.primary)
+                }
 
                 if participant.isMuted {
                     VStack {

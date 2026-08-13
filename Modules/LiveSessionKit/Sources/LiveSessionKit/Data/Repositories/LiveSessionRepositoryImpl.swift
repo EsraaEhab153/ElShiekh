@@ -24,6 +24,7 @@ public final class LiveSessionRepositoryImpl: LiveSessionRepositoryProtocol, @un
     private var participantsMap: [Int: SessionParticipant] = [:]
     private let lock = NSLock()
     private var activeCircleId: String?
+    private var localUid: Int?
 
     public var participantsPublisher: AnyPublisher<[SessionParticipant], Never> {
         participantsSubject.eraseToAnyPublisher()
@@ -58,6 +59,7 @@ public final class LiveSessionRepositoryImpl: LiveSessionRepositoryProtocol, @un
         uid: Int
     ) async throws {
         activeCircleId = circleId
+        localUid = uid
 
         // Add local user to participant map
         lock.withLock {
@@ -65,6 +67,7 @@ public final class LiveSessionRepositoryImpl: LiveSessionRepositoryProtocol, @un
                 uid: uid,
                 name: "You",
                 isHost: false, // will be updated if host
+                isVideoEnabled: true, 
                 isMediaConnected: true,
                 isBackendConfirmed: true
             )
@@ -219,6 +222,12 @@ public final class LiveSessionRepositoryImpl: LiveSessionRepositoryProtocol, @un
 
     public func enableLocalVideo(_ enabled: Bool) {
         agoraManager.enableLocalVideo(enabled)
+        lock.withLock {
+            guard let uid = localUid, var participant = participantsMap[uid] else { return }
+            participant.isVideoEnabled = enabled
+            participantsMap[uid] = participant
+            publishParticipantsLocked()
+        }
     }
 
     public func setupLocalVideoCanvas(_ view: UIView) -> Bool {

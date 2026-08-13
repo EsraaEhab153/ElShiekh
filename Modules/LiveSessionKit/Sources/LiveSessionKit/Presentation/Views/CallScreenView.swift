@@ -39,7 +39,6 @@ public struct CallScreenView: View {
                                 .foregroundColor(dsColors.textSecondary)
                         }
                     }
-
                     Spacer()
                 }
                 .padding(.horizontal, DSSpacing.md)
@@ -79,7 +78,7 @@ public struct CallScreenView: View {
                         spacing: DSSpacing.md
                     ) {
                         ForEach(viewModel.participants) { participant in
-                            ParticipantTileView(participant: participant)
+                            ParticipantTileView(participant: participant, repository: viewModel.repository)
                         }
                     }
                     .padding(.horizontal, DSSpacing.md)
