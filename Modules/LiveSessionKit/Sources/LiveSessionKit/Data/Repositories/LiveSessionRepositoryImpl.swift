@@ -65,6 +65,7 @@ public final class LiveSessionRepositoryImpl: LiveSessionRepositoryProtocol, @un
                 uid: uid,
                 name: "You",
                 isHost: false, // will be updated if host
+                isVideoEnabled: true, 
                 isMediaConnected: true,
                 isBackendConfirmed: true
             )

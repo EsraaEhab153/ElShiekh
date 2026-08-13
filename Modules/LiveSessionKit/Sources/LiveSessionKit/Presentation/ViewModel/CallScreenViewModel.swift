@@ -15,7 +15,7 @@ public final class CallScreenViewModel: ObservableObject {
     @Published public var participants: [SessionParticipant] = []
     @Published public var connectionState: AgoraConnectionState = .disconnected
     @Published public var isMuted: Bool = false
-    @Published public var isVideoEnabled: Bool = false
+    @Published public var isVideoEnabled: Bool = true
     @Published public var isLoading: Bool = false
     @Published public var errorMessage: String?
     @Published public var sessionEndedNotice: String?
@@ -32,7 +32,7 @@ public final class CallScreenViewModel: ObservableObject {
     private let observeParticipantsUseCase: ObserveParticipantsUseCaseProtocol
     private let observeSessionEndedUseCase: ObserveSessionEndedUseCaseProtocol
     private let handleTokenRenewalUseCase: HandleTokenRenewalUseCaseProtocol
-    private let repository: LiveSessionRepositoryProtocol
+    public let repository: LiveSessionRepositoryProtocol
 
     private let onLeft: () -> Void
     private let onSessionEnded: () -> Void

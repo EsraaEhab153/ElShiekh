@@ -98,8 +98,9 @@ public final class AgoraSession: AgoraSessionManaging {
         engineConfig.channelProfile = configuration.channelProfile
 
         let engine = AgoraRtcEngineKit.sharedEngine(with: engineConfig, delegate: delegateProxy)
-
+        
         engine.enableAudio()
+        engine.enableVideo()
         engine.setAudioProfile(.default)
         self.agoraEngine = engine
         return engine
@@ -114,8 +115,8 @@ public final class AgoraSession: AgoraSessionManaging {
     // MARK: - AgoraSessionManaging Methods
 
     public func join(channelName: String, token: String, uid: Int) async throws {
-        try await join(channelName: channelName, token: token, uid: uid, includeVideo: false)
-    }
+            try await join(channelName: channelName, token: token, uid: uid, includeVideo: true) 
+        }
 
     public func join(
         channelName: String,
@@ -145,7 +146,9 @@ public final class AgoraSession: AgoraSessionManaging {
         let options = AgoraRtcChannelMediaOptions()
         options.clientRoleType = .broadcaster
         options.channelProfile = configuration.channelProfile
-
+        options.publishMicrophoneTrack = true
+        options.publishCameraTrack = includeVideo
+        
         delegateProxy.connectionStateSubject.send(.connecting)
 
         let result = engine.joinChannel(
