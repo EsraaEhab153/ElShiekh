@@ -5,6 +5,7 @@ public struct DSSpacing {
     public static let xxs: CGFloat = 4
     public static let xs: CGFloat = 8
     public static let sm: CGFloat = 12
+    public static let smMd: CGFloat = 12
     public static let md: CGFloat = 16
     public static let lg: CGFloat = 24
     public static let xl: CGFloat = 32
@@ -27,37 +28,54 @@ public struct DSElevation {
 }
 
 public enum DSTypography {
+    case headlineLarge
     case headlineSmall
     case headlineMedium
+    case labelLarge
     case labelMedium
     case labelSmall
     case bodySmall
     case bodyMedium
+    case inputLabel
+    case inputHint
+    case inputError
+    case buttonText
     
     public var font: Font {
         switch self {
+        case .headlineLarge: return .largeTitle
         case .headlineSmall: return .headline
         case .headlineMedium: return .title3
+        case .labelLarge: return .body.bold()
         case .labelMedium: return .subheadline
         case .labelSmall: return .caption2
         case .bodySmall: return .caption
         case .bodyMedium: return .body
+        case .inputLabel: return .subheadline
+        case .inputHint: return .body
+        case .inputError: return .caption
+        case .buttonText: return .headline
         }
     }
 }
 
 public struct DSColors {
-    public let background = Color.black
-    public let textPrimary = Color.white
-    public let textSecondary = Color.gray
-    public let success = Color.green
+    public let background = Color.dynamic(light: Color.App.background, dark: .black)
+    public let textPrimary = Color.dynamic(light: .black, dark: .white)
+    public let textSecondary = Color.App.grayText
+    public let textHint = Color.dynamic(light: Color(white: 0.6), dark: Color(white: 0.4))
+    public let textDisabled = Color.dynamic(light: Color.App.grayText.opacity(0.5), dark: Color.App.grayText.opacity(0.5))
+    public let textTertiary = Color.dynamic(light: Color(white: 0.5), dark: Color(white: 0.5))
+    public let success = Color.App.success
     public let warning = Color.orange
-    public let error = Color.red
+    public let error = Color.App.destructive
+    public let errorContainer = Color.dynamic(light: Color.App.destructive.opacity(0.15), dark: Color.App.destructive.opacity(0.2))
     public let onPrimary = Color.white
-    public let surface = Color(white: 0.15)
-    public let onSurface = Color.white
-    public let surfaceVariant = Color(white: 0.25)
-    public let surfaceContainerLow = Color(white: 0.2)
+    public let surface = Color.dynamic(light: Color.App.cardBackground, dark: Color(white: 0.15))
+    public let onSurface = Color.dynamic(light: .black, dark: .white)
+    public let surfaceVariant = Color.dynamic(light: Color(white: 0.85), dark: Color(white: 0.25))
+    public let outlineVariant = Color.dynamic(light: Color(white: 0.85), dark: Color(white: 0.25))
+    public let surfaceContainerLow = Color.dynamic(light: Color(white: 0.95), dark: Color(white: 0.2))
     public let primary = Color.App.primary
     public let primaryContainer = Color.App.primary.opacity(0.15)
     public init() {}

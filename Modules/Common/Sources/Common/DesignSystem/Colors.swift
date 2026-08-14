@@ -1,4 +1,13 @@
 import SwiftUI
+import UIKit
+
+public extension Color {
+    static func dynamic(light: Color, dark: Color) -> Color {
+        Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
+        })
+    }
+}
 
 public extension Color {
     enum App {

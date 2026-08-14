@@ -15,6 +15,11 @@ public final class LoginViewModel: ObservableObject {
     @Published public var email = ""
     @Published public var password = ""
 
+    // MARK: - Error state
+    
+    @Published public var emailError: String?
+    @Published public var passwordError: String?
+
     // MARK: - UI state (mirrored from AuthManager)
 
     @Published public var isLoading = false
@@ -40,14 +45,29 @@ public final class LoginViewModel: ObservableObject {
     // MARK: - Actions
 
     public func login() {
-        guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Please enter your email and password."
-            return
+        emailError = nil
+        passwordError = nil
+        
+        var isValid = true
+        
+        if email.isEmpty {
+            emailError = "Please enter your email"
+            isValid = false
         }
+        
+        if password.isEmpty {
+            passwordError = "Please enter your password"
+            isValid = false
+        }
+        
+        guard isValid else { return }
+        
         authManager.login(email: email, password: password)
     }
 
     public func clearError() {
         errorMessage = nil
+        emailError = nil
+        passwordError = nil
     }
 }

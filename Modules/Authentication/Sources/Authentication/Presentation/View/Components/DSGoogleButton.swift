@@ -19,17 +19,23 @@ public struct DSGoogleButton: View {
     
     public var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: DSSpacing.sm) {
                 Image(systemName: "g.circle.fill")
                     .font(.title2)
                 Text(title)
-                    .dsFont(DSTypography.headlineMedium)
+                    .dsFont(DSTypography.buttonText)
             }
             .foregroundColor(dsColors.textPrimary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, DSSpacing.md)
-            .background(dsColors.surfaceVariant)
-            .cornerRadius(DSRadius.md)
+            .background(
+                RoundedRectangle(cornerRadius: DSRadius.sm)
+                    .fill(dsColors.surfaceContainerLow)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: DSRadius.sm)
+                    .stroke(dsColors.outlineVariant, lineWidth: 1)
+            )
         }
     }
 }

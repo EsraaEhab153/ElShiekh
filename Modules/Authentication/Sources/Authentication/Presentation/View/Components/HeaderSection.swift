@@ -27,11 +27,11 @@ struct HeaderSection: View {
             .padding(.bottom, DSSpacing.xs)
 
             Text("Al-Mahir")
-                .dsFont(DSTypography.labelMedium)
+                .dsFont(DSTypography.labelLarge)
                 .foregroundColor(dsColors.textSecondary)
 
             Text(title)
-                .dsFont(DSTypography.headlineMedium)
+                .dsFont(DSTypography.headlineLarge)
                 .foregroundColor(dsColors.textPrimary)
                 .padding(.top, DSSpacing.xs)
 

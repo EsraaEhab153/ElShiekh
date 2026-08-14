@@ -104,6 +104,7 @@ public struct RegisterView: View {
                     label: "First Name",
                     placeholder: "Fatima",
                     text: $viewModel.firstName,
+                    errorMessage: viewModel.firstNameError,
                     autocapitalization: .words
                 )
 
@@ -111,6 +112,7 @@ public struct RegisterView: View {
                     label: "Last Name",
                     placeholder: "Al-Rashid",
                     text: $viewModel.lastName,
+                    errorMessage: viewModel.lastNameError,
                     autocapitalization: .words
                 )
             }
@@ -121,6 +123,7 @@ public struct RegisterView: View {
                 placeholder: "@username",
                 text: $viewModel.username,
                 leadingIcon: "at",
+                errorMessage: viewModel.usernameError,
                 autocapitalization: .never,
                 autocorrectionDisabled: true
             )
@@ -130,6 +133,7 @@ public struct RegisterView: View {
                 label: "Email",
                 placeholder: "example@email.com",
                 text: $viewModel.email,
+                errorMessage: viewModel.emailError,
                 keyboardType: .emailAddress,
                 textContentType: .emailAddress,
                 autocapitalization: .never,
@@ -141,6 +145,7 @@ public struct RegisterView: View {
                 label: "Phone Number",
                 placeholder: "01012345678",
                 text: $viewModel.phoneNumber,
+                errorMessage: viewModel.phoneNumberError,
                 keyboardType: .phonePad,
                 autocapitalization: .never,
                 autocorrectionDisabled: true
@@ -161,6 +166,7 @@ public struct RegisterView: View {
                 placeholder: "••••••••",
                 text: $viewModel.password,
                 isSecure: true,
+                errorMessage: viewModel.passwordError,
                 textContentType: .newPassword
             )
 
@@ -170,7 +176,7 @@ public struct RegisterView: View {
                 placeholder: "••••••••",
                 text: $viewModel.confirmPassword,
                 isSecure: true,
-                errorMessage: passwordMismatchError,
+                errorMessage: viewModel.confirmPasswordError ?? passwordMismatchError,
                 textContentType: .newPassword
             )
         }

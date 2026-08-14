@@ -33,7 +33,7 @@ public struct DSDropdownField: View {
         VStack(alignment: .leading, spacing: DSSpacing.xs) {
             if let label {
                 Text(label)
-                    .dsFont(DSTypography.labelMedium)
+                    .dsFont(DSTypography.inputLabel)
                     .foregroundColor(dsColors.textSecondary)
             }
             
@@ -48,29 +48,29 @@ public struct DSDropdownField: View {
                     if let leadingIcon {
                         Image(systemName: leadingIcon)
                             .font(.system(size: 16))
-                            .foregroundColor(dsColors.textSecondary)
+                            .foregroundColor(dsColors.textHint)
                             .frame(width: 20)
                     }
                     
                     Text(selection.isEmpty ? placeholder : selection)
-                        .dsFont(DSTypography.bodyMedium)
-                        .foregroundColor(selection.isEmpty ? dsColors.textSecondary.opacity(0.5) : dsColors.textPrimary)
+                        .dsFont(DSTypography.inputHint)
+                        .foregroundColor(selection.isEmpty ? dsColors.textDisabled : dsColors.textPrimary)
                     
                     Spacer()
                     
                     Image(systemName: "chevron.down")
                         .font(.system(size: 14))
-                        .foregroundColor(dsColors.textSecondary)
+                        .foregroundColor(dsColors.textHint)
                 }
                 .padding(.horizontal, DSSpacing.md)
-                .padding(.vertical, DSSpacing.sm)
+                .padding(.vertical, DSSpacing.smMd)
                 .background(
                     RoundedRectangle(cornerRadius: DSRadius.sm)
                         .fill(dsColors.surfaceContainerLow)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: DSRadius.sm)
-                        .stroke(dsColors.surfaceVariant, lineWidth: 1)
+                        .stroke(dsColors.outlineVariant, lineWidth: 1)
                 )
             }
         }

@@ -113,6 +113,7 @@ public struct LoginView: View {
                 label: "Email",
                 placeholder: "example@email.com",
                 text: $viewModel.email,
+                errorMessage: viewModel.emailError,
                 autocapitalization: .never,
                 autocorrectionDisabled: true
             )
@@ -124,6 +125,7 @@ public struct LoginView: View {
                     placeholder: "••••••••",
                     text: $viewModel.password,
                     isSecure: true,
+                    errorMessage: viewModel.passwordError,
                     textContentType: .password
                 )
 
@@ -135,7 +137,6 @@ public struct LoginView: View {
                         .foregroundColor(dsColors.primary)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .padding(.top, DSSpacing.md)
             }
         }
         .padding(.horizontal, DSSpacing.md)
