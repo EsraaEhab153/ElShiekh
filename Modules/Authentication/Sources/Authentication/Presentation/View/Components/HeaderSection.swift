@@ -18,7 +18,7 @@ struct HeaderSection: View {
         VStack(spacing: DSSpacing.xs) {
             ZStack {
                 RoundedRectangle(cornerRadius: DSRadius.sm)
-                    .fill(DSGradients.primary)
+                    .fill(dsColors.primary)
                     .frame(width: 44, height: 44)
                 Image(systemName: "book.closed.fill")
                     .font(.system(size: 22, weight: .semibold))
@@ -27,11 +27,11 @@ struct HeaderSection: View {
             .padding(.bottom, DSSpacing.xs)
 
             Text("Al-Mahir")
-                .dsFont(DSTypography.labelLarge)
+                .dsFont(DSTypography.labelMedium)
                 .foregroundColor(dsColors.textSecondary)
 
             Text(title)
-                .dsFont(DSTypography.headlineLarge)
+                .dsFont(DSTypography.headlineMedium)
                 .foregroundColor(dsColors.textPrimary)
                 .padding(.top, DSSpacing.xs)
 

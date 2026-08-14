@@ -14,13 +14,13 @@ struct OrDivider: View {
     var body: some View {
         HStack(spacing: DSSpacing.sm) {
             Rectangle()
-                .fill(dsColors.outlineVariant)
+                .fill(dsColors.surfaceVariant)
                 .frame(height: 1)
             Text("OR")
                 .dsFont(DSTypography.labelSmall)
-                .foregroundColor(dsColors.textTertiary)
+                .foregroundColor(dsColors.textSecondary)
             Rectangle()
-                .fill(dsColors.outlineVariant)
+                .fill(dsColors.surfaceVariant)
                 .frame(height: 1)
         }
         .padding(.horizontal, DSSpacing.md)

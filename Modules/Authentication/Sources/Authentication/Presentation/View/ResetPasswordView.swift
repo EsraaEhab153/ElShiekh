@@ -74,7 +74,7 @@ public struct ResetPasswordView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 14, weight: .semibold))
                         Text("Back")
-                            .dsFont(DSTypography.labelLarge)
+                            .dsFont(DSTypography.labelMedium)
                     }
                     .foregroundColor(dsColors.primary)
                 }
@@ -125,7 +125,7 @@ public struct ResetPasswordView: View {
             VStack(spacing: DSSpacing.md) {
                 ZStack {
                     Circle()
-                        .fill(dsColors.successContainer)
+                        .fill(dsColors.success.opacity(0.15))
                         .frame(width: 80, height: 80)
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 44))

@@ -81,7 +81,7 @@ public struct ForgetPasswordView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 14, weight: .semibold))
                         Text("Back")
-                            .dsFont(DSTypography.labelLarge)
+                            .dsFont(DSTypography.labelMedium)
                     }
                     .foregroundColor(dsColors.primary)
                 }
@@ -115,14 +115,14 @@ public struct ForgetPasswordView: View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
             Image(systemName: "info.circle")
                 .font(.system(size: 14))
-                .foregroundColor(dsColors.textTertiary)
+                .foregroundColor(dsColors.textSecondary)
                 .padding(.top, 1)
 
             Text(
                 "Check your spam folder if you don't see the email within 2 minutes."
             )
             .dsFont(DSTypography.bodySmall)
-            .foregroundColor(dsColors.textTertiary)
+            .foregroundColor(dsColors.textSecondary)
             .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
@@ -141,7 +141,7 @@ public struct ForgetPasswordView: View {
                 // Success icon
                 ZStack {
                     Circle()
-                        .fill(dsColors.successContainer)
+                        .fill(dsColors.success.opacity(0.15))
                         .frame(width: 80, height: 80)
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 44))

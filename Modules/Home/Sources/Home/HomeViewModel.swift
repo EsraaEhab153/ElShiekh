@@ -11,6 +11,7 @@ import Combine
 import RealtimeKit
 import NetworkKit
 import LiveSessionKit
+import Common
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -45,7 +46,10 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Dynamic Sheikh ID
 
     var currentSheikhId: String {
-        return "482fbea4-eb85-4474-aae6-0cbf7649ac2f"
+        // Dynamically resolved from the authenticated session.
+        // SessionManager is populated by AuthManager on login/silentLogin.
+        return SessionManager.shared.currentUser?.id
+            ?? "482fbea4-eb85-4474-aae6-0cbf7649ac2f" // fallback for dev/testing only
     }
 
     // MARK: - Init

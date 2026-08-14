@@ -31,15 +31,15 @@ struct ErrorBanner: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(dsColors.textTertiary)
+                    .foregroundColor(dsColors.textSecondary)
             }
             .buttonStyle(PlainButtonStyle())
         }
         .padding(.horizontal, DSSpacing.md)
-        .padding(.vertical, DSSpacing.smMd)
+        .padding(.vertical, DSSpacing.sm)
         .background(
             RoundedRectangle(cornerRadius: DSRadius.sm)
-                .fill(dsColors.errorContainer)
+                .fill(dsColors.error.opacity(0.15))
         )
     }
 }

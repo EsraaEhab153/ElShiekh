@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA407A66302D771500543F58 /* Authentication in Frameworks */ = {isa = PBXBuildFile; productRef = CA407A65302D771500543F58 /* Authentication */; };
 		CADE6678301DFD1F006714F5 /* ElShiekhApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */; };
 		CADE667A301DFD1F006714F5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6679301DFD1F006714F5 /* ContentView.swift */; };
 		CADE667C301DFD21006714F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CADE667B301DFD21006714F5 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 			files = (
 				CADE66A3301E0A7D006714F5 /* Common in Frameworks */,
 				CADE66A5301E0A83006714F5 /* Home in Frameworks */,
+				CA407A66302D771500543F58 /* Authentication in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,6 +180,7 @@
 			packageProductDependencies = (
 				CADE66A2301E0A7D006714F5 /* Common */,
 				CADE66A4301E0A83006714F5 /* Home */,
+				CA407A65302D771500543F58 /* Authentication */,
 			);
 			productName = ElShiekh;
 			productReference = CADE6674301DFD1F006714F5 /* ElShiekh.app */;
@@ -638,6 +641,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CA407A65302D771500543F58 /* Authentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Authentication;
+		};
 		CADE66A2301E0A7D006714F5 /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Common;

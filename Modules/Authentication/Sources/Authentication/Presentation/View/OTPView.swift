@@ -81,7 +81,7 @@ public struct OTPView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 14, weight: .semibold))
                         Text("Back")
-                            .dsFont(DSTypography.labelLarge)
+                            .dsFont(DSTypography.labelMedium)
                     }
                     .foregroundColor(dsColors.primary)
                 }
@@ -148,7 +148,7 @@ public struct OTPView: View {
                     isCurrentFocus
                         ? dsColors.primary
                         : (!digit.isEmpty
-                            ? dsColors.outline : dsColors.outlineVariant),
+                            ? dsColors.surfaceVariant : dsColors.surfaceVariant.opacity(0.5)),
                     lineWidth: isCurrentFocus ? 2 : 1
                 )
 
