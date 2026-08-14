@@ -25,6 +25,7 @@ public struct DSTextField: View {
     @State private var showSecureText: Bool = false
     @Environment(\.dsColors) private var dsColors
     @Environment(\.isEnabled) private var isEnabled
+    @FocusState private var isFocused: Bool
 
 
     public init(
@@ -56,6 +57,7 @@ public struct DSTextField: View {
 
     private var borderColor: Color {
         if hasError { return dsColors.error }
+        if isFocused { return dsColors.primary }
         return dsColors.outlineVariant
     }
 
@@ -79,8 +81,10 @@ public struct DSTextField: View {
                 Group {
                     if isSecure && !showSecureText {
                         SecureField(placeholder, text: $text)
+                            .focused($isFocused)
                     } else {
                         TextField(placeholder, text: $text)
+                            .focused($isFocused)
                     }
                 }
                 .dsFont(DSTypography.inputHint)
@@ -110,7 +114,7 @@ public struct DSTextField: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: DSRadius.sm)
-                    .stroke(borderColor, lineWidth: hasError ? 1.5 : 1)
+                    .stroke(borderColor, lineWidth: hasError ? 1.5 : (isFocused ? 1.5 : 1))
             )
 
 
@@ -127,6 +131,7 @@ public struct DSTextField: View {
         }
         .animation(.easeInOut(duration: 0.2), value: hasError)
         .animation(.easeInOut(duration: 0.2), value: errorMessage)
+        .animation(.easeInOut(duration: 0.2), value: isFocused)
     }
 }
 
