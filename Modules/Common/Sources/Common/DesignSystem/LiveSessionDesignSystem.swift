@@ -1,12 +1,14 @@
 import SwiftUI
 
 public struct DSSpacing {
+    public static let none: CGFloat = 0
     public static let xxs: CGFloat = 4
     public static let xs: CGFloat = 8
     public static let sm: CGFloat = 12
     public static let md: CGFloat = 16
     public static let lg: CGFloat = 24
     public static let xl: CGFloat = 32
+    public static let xl2: CGFloat = 48
 }
 
 public struct DSRadius {
@@ -56,8 +58,8 @@ public struct DSColors {
     public let onSurface = Color.white
     public let surfaceVariant = Color(white: 0.25)
     public let surfaceContainerLow = Color(white: 0.2)
-    public let primary = Color.blue
-    public let primaryContainer = Color.blue.opacity(0.15)
+    public let primary = Color.App.primary
+    public let primaryContainer = Color.App.primary.opacity(0.15)
     public init() {}
 }
 

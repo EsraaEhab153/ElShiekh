@@ -56,7 +56,7 @@ public struct DSTextField: View {
 
     private var borderColor: Color {
         if hasError { return dsColors.error }
-        return dsColors.outlineVariant
+        return dsColors.surfaceVariant
     }
 
     public var body: some View {
@@ -64,7 +64,7 @@ public struct DSTextField: View {
 
             if let label {
                 Text(label)
-                    .dsFont(DSTypography.inputLabel)
+                    .dsFont(DSTypography.labelMedium)
                     .foregroundColor(hasError ? dsColors.error : dsColors.textSecondary)
             }
 
@@ -72,7 +72,7 @@ public struct DSTextField: View {
                 if let leadingIcon {
                     Image(systemName: leadingIcon)
                         .font(.system(size: 16))
-                        .foregroundColor(dsColors.textHint)
+                        .foregroundColor(dsColors.textSecondary)
                         .frame(width: 20)
                 }
 
@@ -83,8 +83,8 @@ public struct DSTextField: View {
                         TextField(placeholder, text: $text)
                     }
                 }
-                .dsFont(DSTypography.inputHint)
-                .foregroundColor(isEnabled ? dsColors.textPrimary : dsColors.textDisabled)
+                .dsFont(DSTypography.bodyMedium)
+                .foregroundColor(isEnabled ? dsColors.textPrimary : dsColors.textSecondary.opacity(0.5))
                 .keyboardType(keyboardType)
                 .textInputAutocapitalization(autocapitalization)
                 .autocorrectionDisabled(autocorrectionDisabled)
@@ -97,13 +97,13 @@ public struct DSTextField: View {
                     } label: {
                         Image(systemName: showSecureText ? "eye.slash" : "eye")
                             .font(.system(size: 16))
-                            .foregroundColor(dsColors.textHint)
+                            .foregroundColor(dsColors.textSecondary)
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
             }
             .padding(.horizontal, DSSpacing.md)
-            .padding(.vertical, DSSpacing.smMd)
+            .padding(.vertical, DSSpacing.sm)
             .background(
                 RoundedRectangle(cornerRadius: DSRadius.sm)
                     .fill(dsColors.surfaceContainerLow)
@@ -119,7 +119,7 @@ public struct DSTextField: View {
                     Image(systemName: "exclamationmark.circle")
                         .font(.system(size: 12))
                     Text(errorMessage)
-                        .dsFont(DSTypography.inputError)
+                        .dsFont(DSTypography.labelSmall)
                 }
                 .foregroundColor(dsColors.error)
                 .transition(.opacity.combined(with: .move(edge: .top)))
