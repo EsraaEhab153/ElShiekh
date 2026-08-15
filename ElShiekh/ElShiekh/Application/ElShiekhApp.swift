@@ -6,25 +6,27 @@
 //
 
 import SwiftUI
-import NetworkKit
+import Authentication
 
 @main
 struct ElShiekhApp: App {
+    @StateObject private var authManager = AuthManager.shared
+
     init() {
-            let validTestToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhaG1lZEB0ZXN0LmNvbSIsImlhdCI6MTc4NjU1ODk0OCwiZXhwIjoxNzg2NjQ1MzQ4LCJyb2xlcyI6WyJST0xFX1NIRUlLSCJdLCJ0eXBlIjoiYWNjZXNzIn0.5uTqwh6SjAFfQEMqcqRpGVcDOU76HrGAjGQk5gB-6qzt0tq-1pupX4BVhNfcg4Xfgkhxfidw6FbV9HMmTKe94w"
-            
-            AppRequestInterceptors.shared.tokenProvider = {
-                return validTestToken
-            }
-            
-            AppRequestInterceptors.shared.onRefreshNeeded = { completion in
-                completion(false)
-            }
+        // Wire up the network interceptor to use Keychain tokens
+        // and AuthManager's refresh logic (replaces the hardcoded test token).
+        AuthManager.configureInterceptor()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(authManager)
+                .task {
+                    // Attempt silent login: checks Keychain for existing tokens,
+                    // validates them against /auth/me, and sets authState accordingly.
+                    authManager.silentLoginOnLaunch()
+                }
         }
-        
-        var body: some Scene {
-            WindowGroup {
-                ContentView()
-            }
-        }
+    }
 }

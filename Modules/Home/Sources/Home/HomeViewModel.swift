@@ -11,6 +11,7 @@ import Combine
 import RealtimeKit
 import NetworkKit
 import LiveSessionKit
+import Common
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -45,7 +46,10 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Dynamic Sheikh ID
 
     var currentSheikhId: String {
-        return "482fbea4-eb85-4474-aae6-0cbf7649ac2f"
+        // Dynamically resolved from the authenticated session.
+        // SessionManager is populated by AuthManager on login/silentLogin.
+        return SessionManager.shared.currentUser?.id
+            ?? "482fbea4-eb85-4474-aae6-0cbf7649ac2f" // fallback for dev/testing only
     }
 
     // MARK: - Init
@@ -185,6 +189,12 @@ final class HomeViewModel: ObservableObject {
                 let request = try envelope.decodePayload(as: IncomingCallRequest.self)
                 print("📨 [HomeVM] ✅ Decoded request: requestId=\(request.requestId), student=\(request.studentName ?? "مجهول")")
                 
+                // Prevent UI from showing a new request if a call is already active
+                guard !self.isCallActive else {
+                    print("📨 [HomeVM] ⚠️ Ignored request because provider is currently in a call.")
+                    return
+                }
+                
                 self.incomingRequest = request
                 withAnimation(.spring()) {
                     self.hasIncomingRequest = true
@@ -275,17 +285,18 @@ final class HomeViewModel: ObservableObject {
         print("📋 [HomeVM] Fetching pending requests...")
         let endpoint = InstantMeetingEndpoints.getPendingRequests
 
-        // هنا بنستقبل Response كامل متغلف في PendingRequestsResponse
+        // NetworkService automatically decodes APISuccessResponse<T> and returns the `data` part.
+        // Therefore, we only need to ask for `PendingRequestsData`.
         networkService.request(endpoint)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
                     print("📋 [HomeVM] ❌ Fetch pending failed: \(error.localizedDescription)")
                 }
-            }, receiveValue: { [weak self] (response: PendingRequestsResponse) in
+            }, receiveValue: { [weak self] (response: PendingRequestsData) in
                 guard let self else { return }
                 
-                let requests = response.data.content
+                let requests = response.content
                 print("📋 [HomeVM] ✅ Received \(requests.count) pending request(s)")
                 
                 if let firstRequest = requests.first {
@@ -303,6 +314,41 @@ final class HomeViewModel: ObservableObject {
 
     func endCall() {
         print("📞 [HomeVM] endCall()")
+        
+        // 1. Reset UI State completely
         isCallActive = false
+        hasIncomingRequest = false
+        incomingRequest = nil
+        
+        let endedRequestId = sessionRequestId
+        sessionRequestId = ""
+        sessionChannelName = ""
+        sessionAgoraToken = ""
+        
+        // 2. Sync Backend: Notify the server the meeting has ended
+        if !endedRequestId.isEmpty {
+            print("📞 [HomeVM] Notifying backend that meeting \(endedRequestId) has ended")
+            let endEndpoint = InstantMeetingEndpoints.endMeeting(requestId: endedRequestId)
+            networkService.requestWithoutData(endEndpoint)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+                    print("📞 [HomeVM] ✅ Meeting effectively ended on backend")
+                })
+                .store(in: &cancellables)
+        }
+        
+        // 3. Reset Availability to AVAILABLE (if they are online) so they can receive new calls
+        if isOnline {
+            print("📞 [HomeVM] Syncing availability back to AVAILABLE")
+            let availEndpoint = InstantMeetingEndpoints.updateAvailability(status: .available)
+            networkService.requestWithoutData(availEndpoint)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] _ in
+                    print("📞 [HomeVM] ✅ Availability synced to AVAILABLE")
+                    // 4. Fetch any pending requests that might have been queued while they were busy
+                    self?.fetchPendingRequests()
+                })
+                .store(in: &cancellables)
+        }
     }
 }
