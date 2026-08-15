@@ -220,6 +220,7 @@ public final class AuthManager: ObservableObject {
         password: String,
         confirmPassword: String,
         phoneNumber: String,
+        gender: String,
         onSuccess: @escaping () -> Void
     ) {
         isLoading = true
@@ -231,7 +232,8 @@ public final class AuthManager: ObservableObject {
             email: email,
             password: password,
             confirmPassword: confirmPassword,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            gender: gender
         )
         .sink { [weak self] completion in
             guard let self else { return }

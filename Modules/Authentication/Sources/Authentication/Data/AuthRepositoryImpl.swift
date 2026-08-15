@@ -27,7 +27,8 @@ final class AuthRepositoryImpl: AuthRepositoryProtocol {
         email: String,
         password: String,
         confirmPassword: String,
-        phoneNumber: String
+        phoneNumber: String,
+        gender: String
     ) -> AnyPublisher<Bool, NetworkError> {
         networkService.requestWithoutData(
             AuthEndpoints.register(
@@ -37,7 +38,8 @@ final class AuthRepositoryImpl: AuthRepositoryProtocol {
                 email: email,
                 password: password,
                 confirmPassword: confirmPassword,
-                phoneNumber: phoneNumber
+                phoneNumber: phoneNumber,
+                gender: gender
             )
         )
     }

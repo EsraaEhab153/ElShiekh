@@ -18,6 +18,7 @@ public protocol AuthUseCaseProtocol: AnyObject {
         password: String,
         confirmPassword: String,
         phoneNumber: String,
+        gender: String,
         onSuccess: @escaping () -> Void
     )
     

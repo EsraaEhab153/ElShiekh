@@ -18,7 +18,8 @@ enum AuthEndpoints: APIEndpoint {
         email: String,
         password: String,
         confirmPassword: String,
-        phoneNumber: String
+        phoneNumber: String,
+        gender: String
     )
     case refresh(refreshToken: String)
     case logout(accessToken: String)
@@ -87,7 +88,8 @@ enum AuthEndpoints: APIEndpoint {
             let email,
             let password,
             let confirmPassword,
-            let phoneNumber
+            let phoneNumber,
+            let gender
         ):
             return [
                 "username": username,
@@ -97,6 +99,7 @@ enum AuthEndpoints: APIEndpoint {
                 "password": password,
                 "confirmPassword": confirmPassword,
                 "phoneNumber": phoneNumber,
+                "gender": gender,
             ]
 
         case .refresh(let refreshToken):
@@ -141,7 +144,8 @@ enum AuthEndpoints: APIEndpoint {
             let email,
             let password,
             let confirmPassword,
-            let phoneNumber
+            let phoneNumber,
+            let gender
         ):
             let payload: [String: String] = [
                 "username": username,
@@ -151,6 +155,7 @@ enum AuthEndpoints: APIEndpoint {
                 "password": password,
                 "confirmPassword": confirmPassword,
                 "phoneNumber": phoneNumber,
+                "gender": gender,
             ]
             guard let jsonData = try? JSONSerialization.data(withJSONObject: payload) else {
                 return nil
