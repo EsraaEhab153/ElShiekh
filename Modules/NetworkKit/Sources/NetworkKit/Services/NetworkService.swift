@@ -67,7 +67,23 @@ public final class NetworkService: NetworkServiceProtocol, @unchecked Sendable {
                             from: data
                         )
                         return decoded.data
+                    } catch let DecodingError.dataCorrupted(context) {
+                        print("❌ [NetworkService] Data corrupted: \(context)")
+                        throw NetworkError.decodingFailed
+                    } catch let DecodingError.keyNotFound(key, context) {
+                        print("❌ [NetworkService] Key '\(key.stringValue)' not found: \(context.debugDescription)")
+                        print("❌ [NetworkService] codingPath: \(context.codingPath)")
+                        throw NetworkError.decodingFailed
+                    } catch let DecodingError.valueNotFound(value, context) {
+                        print("❌ [NetworkService] Value '\(value)' not found: \(context.debugDescription)")
+                        print("❌ [NetworkService] codingPath: \(context.codingPath)")
+                        throw NetworkError.decodingFailed
+                    } catch let DecodingError.typeMismatch(type, context) {
+                        print("❌ [NetworkService] Type '\(type)' mismatch: \(context.debugDescription)")
+                        print("❌ [NetworkService] codingPath: \(context.codingPath)")
+                        throw NetworkError.decodingFailed
                     } catch {
+                        print("❌ [NetworkService] Unknown decoding error: \(error)")
                         throw NetworkError.decodingFailed
                     }
                 case .failure(let error):
