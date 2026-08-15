@@ -94,10 +94,11 @@ final class HomeViewModel: ObservableObject {
                 switch state {
                 case .failed(let error):
                     print("🔌 [HomeVM] Connection FAILED: \(error)")
-                    if self.isOnline {
-                        print("🔌 [HomeVM] Auto-reverting isOnline → false")
-                        self.isOnline = false
-                    }
+                    // Commented out to prevent the toggle from turning off when backgrounded
+                    // if self.isOnline {
+                    //     print("🔌 [HomeVM] Auto-reverting isOnline → false")
+                    //     self.isOnline = false
+                    // }
                 case .disconnected:
                     print("🔌 [HomeVM] State: Disconnected")
                 case .connected:
