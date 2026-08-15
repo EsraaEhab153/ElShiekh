@@ -169,7 +169,7 @@ final class HomeViewModel: ObservableObject {
 
     private func connectSocket() {
         Task {
-            let url = URL(string: "wss://almahir-production.up.railway.app/ws/websocket")!
+            let url = URL(string: "wss://almahir-production-6f98.up.railway.app/ws/websocket")!
             let token = AppRequestInterceptors.shared.tokenProvider?() ?? ""
             print("🔌 [HomeVM] connectSocket — url=\(url), tokenEmpty=\(token.isEmpty)")
 
