@@ -12,6 +12,7 @@ import RealtimeKit
 import NetworkKit
 import LiveSessionKit
 import Common
+import UserNotifications
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -57,6 +58,29 @@ final class HomeViewModel: ObservableObject {
     init() {
         print("🏠 [HomeVM] init — sheikhId=\(currentSheikhId)")
         setupConnectionStateObserver()
+        setupNotificationObservers()
+    }
+    
+    private func setupNotificationObservers() {
+        NotificationCenter.default.publisher(for: NSNotification.Name("AnswerCall"))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let reqId = notification.userInfo?["requestId"] as? String,
+                      self.incomingRequest?.requestId == reqId else { return }
+                self.acceptIncomingRequest()
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: NSNotification.Name("DeclineCall"))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let reqId = notification.userInfo?["requestId"] as? String,
+                      self.incomingRequest?.requestId == reqId else { return }
+                self.rejectIncomingRequest()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Connection State Observer
@@ -130,9 +154,11 @@ final class HomeViewModel: ObservableObject {
                 print("🔄 [HomeVM] ✅ API success, response=\(success)")
                 if newValue {
                     print("🔄 [HomeVM] → Connecting socket...")
+                    BackgroundAudioManager.shared.start()
                     self.connectSocket()
                 } else {
                     print("🔄 [HomeVM] → Disconnecting socket...")
+                    BackgroundAudioManager.shared.stop()
                     self.disconnectSocket()
                 }
             })
@@ -199,10 +225,35 @@ final class HomeViewModel: ObservableObject {
                 withAnimation(.spring()) {
                     self.hasIncomingRequest = true
                 }
+                
+                // Show local notification for background wake/interaction
+                self.showLocalNotification(for: request)
+                
             } catch {
                 print("📨 [HomeVM] ❌ Decode error details: \(error)")
             }
         }
+        
+    private func showLocalNotification(for request: IncomingCallRequest) {
+        let content = UNMutableNotificationContent()
+        content.title = "Incoming Call"
+        content.body = "\(request.studentName ?? "Student") is calling you..."
+        content.categoryIdentifier = "INCOMING_CALL"
+        content.sound = UNNotificationSound.default
+        content.userInfo = ["requestId": request.requestId]
+        
+        let req = UNNotificationRequest(
+            identifier: request.requestId,
+            content: content,
+            trigger: nil // deliver immediately
+        )
+        
+        UNUserNotificationCenter.current().add(req) { error in
+            if let error = error {
+                print("Error pushing local notification: \(error.localizedDescription)")
+            }
+        }
+    }
 
     // MARK: - Accept Flow
 
