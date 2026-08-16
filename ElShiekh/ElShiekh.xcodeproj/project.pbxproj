@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		CA407A66302D771500543F58 /* Authentication in Frameworks */ = {isa = PBXBuildFile; productRef = CA407A65302D771500543F58 /* Authentication */; };
+		CAB4207A30310A2F003990F8 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB4207930310A2F003990F8 /* WidgetKit.framework */; };
+		CAB4207C30310A2F003990F8 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB4207B30310A2F003990F8 /* SwiftUI.framework */; };
+		CAB4207F30310A2F003990F8 /* CallWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB4207E30310A2F003990F8 /* CallWidgetBundle.swift */; };
+		CAB4208130310A2F003990F8 /* CallWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB4208030310A2F003990F8 /* CallWidgetLiveActivity.swift */; };
+		CAB4208330310A2F003990F8 /* CallWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB4208230310A2F003990F8 /* CallWidget.swift */; };
+		CAB4208530310A32003990F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAB4208430310A32003990F8 /* Assets.xcassets */; };
+		CAB4208930310A32003990F8 /* CallWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAB4207830310A2F003990F8 /* CallWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CAB4208F30310D46003990F8 /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = CAB4208E30310D46003990F8 /* Home */; };
 		CADE6678301DFD1F006714F5 /* ElShiekhApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */; };
 		CADE667A301DFD1F006714F5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE6679301DFD1F006714F5 /* ContentView.swift */; };
 		CADE667C301DFD21006714F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CADE667B301DFD21006714F5 /* Assets.xcassets */; };
@@ -20,6 +28,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CAB4208730310A32003990F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CADE666C301DFD1F006714F5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAB4207730310A2F003990F8;
+			remoteInfo = CallWidgetExtension;
+		};
 		CADE6685301DFD22006714F5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CADE666C301DFD1F006714F5 /* Project object */;
@@ -36,7 +51,29 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CAB4208A30310A32003990F8 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CAB4208930310A32003990F8 /* CallWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		CAB4207830310A2F003990F8 /* CallWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CallWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAB4207930310A2F003990F8 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		CAB4207B30310A2F003990F8 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		CAB4207E30310A2F003990F8 /* CallWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallWidgetBundle.swift; sourceTree = "<group>"; };
+		CAB4208030310A2F003990F8 /* CallWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallWidgetLiveActivity.swift; sourceTree = "<group>"; };
+		CAB4208230310A2F003990F8 /* CallWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallWidget.swift; sourceTree = "<group>"; };
+		CAB4208430310A32003990F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CAB4208630310A32003990F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CAC275B9302665BC002F9485 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CADE6674301DFD1F006714F5 /* ElShiekh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElShiekh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CADE6677301DFD1F006714F5 /* ElShiekhApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElShiekhApp.swift; sourceTree = "<group>"; };
@@ -52,6 +89,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CAB4207530310A2F003990F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAB4207C30310A2F003990F8 /* SwiftUI.framework in Frameworks */,
+				CAB4207A30310A2F003990F8 /* WidgetKit.framework in Frameworks */,
+				CAB4208F30310D46003990F8 /* Home in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CADE6671301DFD1F006714F5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -95,12 +142,25 @@
 			path = Configuration;
 			sourceTree = "<group>";
 		};
+		CAB4207D30310A2F003990F8 /* CallWidget */ = {
+			isa = PBXGroup;
+			children = (
+				CAB4207E30310A2F003990F8 /* CallWidgetBundle.swift */,
+				CAB4208030310A2F003990F8 /* CallWidgetLiveActivity.swift */,
+				CAB4208230310A2F003990F8 /* CallWidget.swift */,
+				CAB4208430310A32003990F8 /* Assets.xcassets */,
+				CAB4208630310A32003990F8 /* Info.plist */,
+			);
+			path = CallWidget;
+			sourceTree = "<group>";
+		};
 		CADE666B301DFD1F006714F5 = {
 			isa = PBXGroup;
 			children = (
 				CADE6676301DFD1F006714F5 /* ElShiekh */,
 				CADE6687301DFD22006714F5 /* ElShiekhTests */,
 				CADE6691301DFD22006714F5 /* ElShiekhUITests */,
+				CAB4207D30310A2F003990F8 /* CallWidget */,
 				CADE6675301DFD1F006714F5 /* Products */,
 				CADE66A1301E0A7D006714F5 /* Frameworks */,
 			);
@@ -112,6 +172,7 @@
 				CADE6674301DFD1F006714F5 /* ElShiekh.app */,
 				CADE6684301DFD22006714F5 /* ElShiekhTests.xctest */,
 				CADE668E301DFD22006714F5 /* ElShiekhUITests.xctest */,
+				CAB4207830310A2F003990F8 /* CallWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,6 +218,8 @@
 		CADE66A1301E0A7D006714F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAB4207930310A2F003990F8 /* WidgetKit.framework */,
+				CAB4207B30310A2F003990F8 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -164,6 +227,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		CAB4207730310A2F003990F8 /* CallWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAB4208D30310A32003990F8 /* Build configuration list for PBXNativeTarget "CallWidgetExtension" */;
+			buildPhases = (
+				CAB4207430310A2F003990F8 /* Sources */,
+				CAB4207530310A2F003990F8 /* Frameworks */,
+				CAB4207630310A2F003990F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CallWidgetExtension;
+			packageProductDependencies = (
+				CAB4208E30310D46003990F8 /* Home */,
+			);
+			productName = CallWidgetExtension;
+			productReference = CAB4207830310A2F003990F8 /* CallWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CADE6673301DFD1F006714F5 /* ElShiekh */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CADE6698301DFD22006714F5 /* Build configuration list for PBXNativeTarget "ElShiekh" */;
@@ -171,10 +254,12 @@
 				CADE6670301DFD1F006714F5 /* Sources */,
 				CADE6671301DFD1F006714F5 /* Frameworks */,
 				CADE6672301DFD1F006714F5 /* Resources */,
+				CAB4208A30310A32003990F8 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CAB4208830310A32003990F8 /* PBXTargetDependency */,
 			);
 			name = ElShiekh;
 			packageProductDependencies = (
@@ -232,6 +317,9 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					CAB4207730310A2F003990F8 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					CADE6673301DFD1F006714F5 = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -261,11 +349,20 @@
 				CADE6673301DFD1F006714F5 /* ElShiekh */,
 				CADE6683301DFD22006714F5 /* ElShiekhTests */,
 				CADE668D301DFD22006714F5 /* ElShiekhUITests */,
+				CAB4207730310A2F003990F8 /* CallWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CAB4207630310A2F003990F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAB4208530310A32003990F8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CADE6672301DFD1F006714F5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -292,6 +389,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CAB4207430310A2F003990F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAB4208130310A2F003990F8 /* CallWidgetLiveActivity.swift in Sources */,
+				CAB4207F30310A2F003990F8 /* CallWidgetBundle.swift in Sources */,
+				CAB4208330310A2F003990F8 /* CallWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CADE6670301DFD1F006714F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -321,6 +428,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CAB4208830310A32003990F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAB4207730310A2F003990F8 /* CallWidgetExtension */;
+			targetProxy = CAB4208730310A32003990F8 /* PBXContainerItemProxy */;
+		};
 		CADE6686301DFD22006714F5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CADE6673301DFD1F006714F5 /* ElShiekh */;
@@ -334,6 +446,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		CAB4208B30310A32003990F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DBLRPPJW4P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CallWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CallWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ITI.ElShiekh.CallWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CAB4208C30310A32003990F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DBLRPPJW4P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CallWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CallWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ITI.ElShiekh.CallWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		CADE6696301DFD22006714F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
@@ -459,6 +625,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -471,6 +638,7 @@
 				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -493,6 +661,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E51F8E27EEBB96D7629A5207 /* Secrets.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -505,6 +674,7 @@
 				INFOPLIST_KEY_AGORA_APP_ID = "$(AGORA_APP_ID)";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to allow you to broadcast video during consultations.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires microphone access to communicate with the user during consultations.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -602,6 +772,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CAB4208D30310A32003990F8 /* Build configuration list for PBXNativeTarget "CallWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAB4208B30310A32003990F8 /* Debug */,
+				CAB4208C30310A32003990F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CADE666F301DFD1F006714F5 /* Build configuration list for PBXProject "ElShiekh" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -644,6 +823,10 @@
 		CA407A65302D771500543F58 /* Authentication */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Authentication;
+		};
+		CAB4208E30310D46003990F8 /* Home */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Home;
 		};
 		CADE66A2301E0A7D006714F5 /* Common */ = {
 			isa = XCSwiftPackageProductDependency;

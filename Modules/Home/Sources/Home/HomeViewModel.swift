@@ -13,6 +13,7 @@ import NetworkKit
 import LiveSessionKit
 import Common
 import UserNotifications
+import ActivityKit
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -25,6 +26,7 @@ final class HomeViewModel: ObservableObject {
     /// Incoming request state
     @Published var hasIncomingRequest: Bool = false
     @Published var incomingRequest: IncomingCallRequest?
+    @Published var currentLiveActivity: Activity<CallAttributes>?
 
     /// Call state
     @Published var isCallActive: Bool = false
@@ -227,14 +229,44 @@ final class HomeViewModel: ObservableObject {
                     self.hasIncomingRequest = true
                 }
                 
-                // Show local notification for background wake/interaction
-                self.showLocalNotification(for: request)
+                // Check app state to handle foreground vs background
+                if UIApplication.shared.applicationState == .active {
+                    print("📨 [HomeVM] App is active. Showing Live Activity.")
+                    self.showLiveActivity(for: request)
+                } else {
+                    print("📨 [HomeVM] App is in background. Showing Local Notification.")
+                    self.showLocalNotification(for: request)
+                }
                 
             } catch {
                 print("📨 [HomeVM] ❌ Decode error details: \(error)")
             }
         }
         
+    private func showLiveActivity(for request: IncomingCallRequest) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            print("Live Activities are not enabled.")
+            return
+        }
+        
+        let attributes = CallAttributes(
+            callerName: request.studentName ?? "Student",
+            requestId: request.requestId
+        )
+        let contentState = CallAttributes.ContentState(status: "Ringing...")
+        
+        do {
+            currentLiveActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: contentState, staleDate: nil),
+                pushType: nil
+            )
+            print("✅ Live Activity started successfully!")
+        } catch {
+            print("❌ Error starting Live Activity: \(error.localizedDescription)")
+        }
+    }
+
     private func showLocalNotification(for request: IncomingCallRequest) {
         let content = UNMutableNotificationContent()
         content.title = "Incoming Call"
@@ -256,6 +288,16 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    func endLiveActivity() {
+        Task {
+            let finalState = CallAttributes.ContentState(status: "Ended")
+            let content = ActivityContent(state: finalState, staleDate: nil)
+            
+            await currentLiveActivity?.end(content, dismissalPolicy: .immediate)
+            currentLiveActivity = nil
+        }
+    }
+
     // MARK: - Accept Flow
 
     func acceptIncomingRequest() {
@@ -264,6 +306,7 @@ final class HomeViewModel: ObservableObject {
         print("📞 [HomeVM] Accepting request: requestId=\(request.requestId)")
         isAccepting = true
         acceptError = nil
+        endLiveActivity()
 
         let endpoint = InstantMeetingEndpoints.acceptRequest(requestId: request.requestId)
         networkService.request(endpoint)
@@ -312,6 +355,7 @@ final class HomeViewModel: ObservableObject {
         guard let request = incomingRequest else { return }
 
         print("📞 [HomeVM] Rejecting request: requestId=\(request.requestId)")
+        endLiveActivity()
 
         let endpoint = InstantMeetingEndpoints.declineRequest(requestId: request.requestId)
         networkService.requestWithoutData(endpoint)
@@ -371,6 +415,7 @@ final class HomeViewModel: ObservableObject {
         isCallActive = false
         hasIncomingRequest = false
         incomingRequest = nil
+        endLiveActivity()
         
         let endedRequestId = sessionRequestId
         sessionRequestId = ""
