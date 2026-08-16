@@ -18,7 +18,8 @@ protocol AuthRepositoryProtocol {
         email: String,
         password: String,
         confirmPassword: String,
-        phoneNumber: String
+        phoneNumber: String,
+        gender: String
     ) -> AnyPublisher<Bool, NetworkError>
     
     func refresh(refreshToken: String) -> AnyPublisher<AuthTokens, NetworkError>

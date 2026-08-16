@@ -21,7 +21,7 @@ public final class RegisterViewModel: ObservableObject {
     @Published public var phoneNumber = ""
     @Published public var gender = ""
 
-    public let genderOptions = ["Male", "Female"]
+    public let genderOptions = [Gender.male.displayName, Gender.female.displayName]
 
     // MARK: - Error state
     
@@ -61,6 +61,9 @@ public final class RegisterViewModel: ObservableObject {
 
     public func register() {
         guard validate() else { return }
+        
+        let selectedGender = Gender.allCases.first(where: { $0.displayName == gender })?.rawValue ?? ""
+        
         authManager.register(
             username: username,
             firstName: firstName,
@@ -68,7 +71,8 @@ public final class RegisterViewModel: ObservableObject {
             email: email,
             password: password,
             confirmPassword: confirmPassword,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            gender: selectedGender
         ) { [weak self] in
             self?.registrationSuccessful = true
         }

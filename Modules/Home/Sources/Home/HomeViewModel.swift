@@ -12,6 +12,8 @@ import RealtimeKit
 import NetworkKit
 import LiveSessionKit
 import Common
+import UserNotifications
+import ActivityKit
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -24,6 +26,7 @@ final class HomeViewModel: ObservableObject {
     /// Incoming request state
     @Published var hasIncomingRequest: Bool = false
     @Published var incomingRequest: IncomingCallRequest?
+    @Published var currentLiveActivity: Activity<CallAttributes>?
 
     /// Call state
     @Published var isCallActive: Bool = false
@@ -57,6 +60,29 @@ final class HomeViewModel: ObservableObject {
     init() {
         print("🏠 [HomeVM] init — sheikhId=\(currentSheikhId)")
         setupConnectionStateObserver()
+        setupNotificationObservers()
+    }
+    
+    private func setupNotificationObservers() {
+        NotificationCenter.default.publisher(for: NSNotification.Name("AnswerCall"))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let reqId = notification.userInfo?["requestId"] as? String,
+                      self.incomingRequest?.requestId == reqId else { return }
+                self.acceptIncomingRequest()
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: NSNotification.Name("DeclineCall"))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let reqId = notification.userInfo?["requestId"] as? String,
+                      self.incomingRequest?.requestId == reqId else { return }
+                self.rejectIncomingRequest()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Connection State Observer
@@ -70,10 +96,11 @@ final class HomeViewModel: ObservableObject {
                 switch state {
                 case .failed(let error):
                     print("🔌 [HomeVM] Connection FAILED: \(error)")
-                    if self.isOnline {
-                        print("🔌 [HomeVM] Auto-reverting isOnline → false")
-                        self.isOnline = false
-                    }
+                    // Commented out to prevent the toggle from turning off when backgrounded
+                    // if self.isOnline {
+                    //     print("🔌 [HomeVM] Auto-reverting isOnline → false")
+                    //     self.isOnline = false
+                    // }
                 case .disconnected:
                     print("🔌 [HomeVM] State: Disconnected")
                 case .connected:
@@ -130,9 +157,11 @@ final class HomeViewModel: ObservableObject {
                 print("🔄 [HomeVM] ✅ API success, response=\(success)")
                 if newValue {
                     print("🔄 [HomeVM] → Connecting socket...")
+                    BackgroundAudioManager.shared.start()
                     self.connectSocket()
                 } else {
                     print("🔄 [HomeVM] → Disconnecting socket...")
+                    BackgroundAudioManager.shared.stop()
                     self.disconnectSocket()
                 }
             })
@@ -143,7 +172,7 @@ final class HomeViewModel: ObservableObject {
 
     private func connectSocket() {
         Task {
-            let url = URL(string: "wss://almahir-production.up.railway.app/ws/websocket")!
+            let url = URL(string: "wss://almahir-production-6f98.up.railway.app/ws/websocket")!
             let token = AppRequestInterceptors.shared.tokenProvider?() ?? ""
             print("🔌 [HomeVM] connectSocket — url=\(url), tokenEmpty=\(token.isEmpty)")
 
@@ -199,10 +228,75 @@ final class HomeViewModel: ObservableObject {
                 withAnimation(.spring()) {
                     self.hasIncomingRequest = true
                 }
+                
+                // Check app state to handle foreground vs background
+                if UIApplication.shared.applicationState == .active {
+                    print("📨 [HomeVM] App is active. Showing Live Activity.")
+                    self.showLiveActivity(for: request)
+                } else {
+                    print("📨 [HomeVM] App is in background. Showing Local Notification.")
+                    self.showLocalNotification(for: request)
+                }
+                
             } catch {
                 print("📨 [HomeVM] ❌ Decode error details: \(error)")
             }
         }
+        
+    private func showLiveActivity(for request: IncomingCallRequest) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            print("Live Activities are not enabled.")
+            return
+        }
+        
+        let attributes = CallAttributes(
+            callerName: request.studentName ?? "Student",
+            requestId: request.requestId
+        )
+        let contentState = CallAttributes.ContentState(status: "Ringing...")
+        
+        do {
+            currentLiveActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: contentState, staleDate: nil),
+                pushType: nil
+            )
+            print("✅ Live Activity started successfully!")
+        } catch {
+            print("❌ Error starting Live Activity: \(error.localizedDescription)")
+        }
+    }
+
+    private func showLocalNotification(for request: IncomingCallRequest) {
+        let content = UNMutableNotificationContent()
+        content.title = "Incoming Call"
+        content.body = "\(request.studentName ?? "Student") is calling you..."
+        content.categoryIdentifier = "INCOMING_CALL"
+        content.sound = UNNotificationSound.default
+        content.userInfo = ["requestId": request.requestId]
+        
+        let req = UNNotificationRequest(
+            identifier: request.requestId,
+            content: content,
+            trigger: nil // deliver immediately
+        )
+        
+        UNUserNotificationCenter.current().add(req) { error in
+            if let error = error {
+                print("Error pushing local notification: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func endLiveActivity() {
+        Task {
+            let finalState = CallAttributes.ContentState(status: "Ended")
+            let content = ActivityContent(state: finalState, staleDate: nil)
+            
+            await currentLiveActivity?.end(content, dismissalPolicy: .immediate)
+            currentLiveActivity = nil
+        }
+    }
 
     // MARK: - Accept Flow
 
@@ -212,6 +306,7 @@ final class HomeViewModel: ObservableObject {
         print("📞 [HomeVM] Accepting request: requestId=\(request.requestId)")
         isAccepting = true
         acceptError = nil
+        endLiveActivity()
 
         let endpoint = InstantMeetingEndpoints.acceptRequest(requestId: request.requestId)
         networkService.request(endpoint)
@@ -260,6 +355,7 @@ final class HomeViewModel: ObservableObject {
         guard let request = incomingRequest else { return }
 
         print("📞 [HomeVM] Rejecting request: requestId=\(request.requestId)")
+        endLiveActivity()
 
         let endpoint = InstantMeetingEndpoints.declineRequest(requestId: request.requestId)
         networkService.requestWithoutData(endpoint)
@@ -319,6 +415,7 @@ final class HomeViewModel: ObservableObject {
         isCallActive = false
         hasIncomingRequest = false
         incomingRequest = nil
+        endLiveActivity()
         
         let endedRequestId = sessionRequestId
         sessionRequestId = ""

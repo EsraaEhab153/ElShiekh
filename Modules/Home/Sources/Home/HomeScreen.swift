@@ -10,6 +10,7 @@ import Common
 import RealtimeKit
 import LiveSessionKit
 import NetworkKit
+import ActivityKit // 👈 ضفنا دي عشان الزرار يشتغل
 
 // MARK: - Incoming Request Payload (from /topic/provider/requests)
 
@@ -105,6 +106,8 @@ public struct HomeScreen: View {
                 }
 
                 Spacer()
+                
+
 
                 CustomTabBar(selectedTab: $selectedTab)
             }
@@ -112,7 +115,7 @@ public struct HomeScreen: View {
         // MARK: - Full Screen Cover → LiveSessionKit
         .fullScreenCover(isPresented: $viewModel.isCallActive) {
             startLiveSession(
-                circleId: viewModel.sessionRequestId, 
+                circleId: viewModel.sessionRequestId,
                 channelName: viewModel.sessionChannelName,
                 agoraToken: viewModel.sessionAgoraToken,
                 uid: 0,
