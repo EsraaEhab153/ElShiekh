@@ -47,7 +47,7 @@ public struct ProfileView: View {
                                 
                                 Text("Edit Sheikh Profile")
                                     .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.primary) 
+                                    .foregroundColor(.primary)
                                 
                                 Spacer()
                                 
@@ -111,37 +111,20 @@ public struct ProfileView: View {
                             Text("Logout")
                                 .font(.system(size: 16, weight: .bold))
                         }
-                        .foregroundColor(.primary)
+                        .foregroundColor(.red)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                         .background(
                             Capsule()
-                                .stroke(Color.App.grayText.opacity(0.3), lineWidth: 1)
+                                .stroke(.red.opacity(0.3), lineWidth: 1)
                         )
                     }
                     .disabled(viewModel.isLoggingOut)
                     .opacity(viewModel.isLoggingOut ? 0.7 : 1.0)
                     .padding(.horizontal, 24)
                     .padding(.top, 32)
-                    
-                    // Delete Account Button (matches the red text at the bottom of the screenshot)
-                    // Delete Account Button (matches the red text at the bottom of the screenshot)
-                    Button(action: {
-                        // Delete account logic
-                    }) {
-                        Text("Delete Account")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(Color.App.destructive)
-                            .frame(maxWidth: .infinity) 
-                            .padding(.vertical, 16)
-                            .background(
-                                Capsule()
-                                    .stroke(Color.App.destructive, lineWidth: 1) 
-                            )
-                    }
-                    .padding(.horizontal, 24) 
-                    .padding(.top, 16)
-                    .padding(.bottom, 32)}}
+                }
+            }
             .background(Color(UIColor.systemBackground).ignoresSafeArea())
             .navigationTitle("Account")
         }
