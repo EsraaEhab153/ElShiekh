@@ -31,7 +31,35 @@ public struct ProfileView: View {
                     
                     // Settings Options
                     VStack(spacing: 0) {
-                        settingsRow(icon: "person.text.rectangle", title: "Edit Sheikh Profile")
+                        NavigationLink(destination: EditProfileView(
+                            viewModel: EditProfileViewModel(
+                                sheikhId: SessionManager.shared.currentUser?.id ?? "",
+                                initialFirstName: SessionManager.shared.currentUser?.fullName.components(separatedBy: " ").first ?? "",
+                                initialLastName: SessionManager.shared.currentUser?.fullName.components(separatedBy: " ").dropFirst().joined(separator: " ") ?? "",
+                                initialPhoneNumber: ""
+                            )
+                        )) {
+                            HStack(spacing: 16) {
+                                Image(systemName: "person.text.rectangle")
+                                    .font(.system(size: 22))
+                                    .foregroundColor(Color.App.grayText)
+                                    .frame(width: 28)
+                                
+                                Text("Edit Sheikh Profile")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.primary) 
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(Color.App.grayText.opacity(0.6))
+                            }
+                            .padding(.vertical, 16)
+                            .padding(.horizontal, 24)
+                            .background(Color(UIColor.systemBackground))
+                        }
+                        .buttonStyle(PlainButtonStyle())
                         Divider().padding(.leading, 16)
                         
                         Menu {
