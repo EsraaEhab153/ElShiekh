@@ -22,7 +22,7 @@ enum AuthEndpoints: APIEndpoint {
         gender: String
     )
     case refresh(refreshToken: String)
-    case logout(accessToken: String)
+    case logout(refreshToken: String)
     case me(accessToken: String)
     case verifyOTP(otp: String, email: String)
     case verifyEmail(email: String)
@@ -113,9 +113,13 @@ enum AuthEndpoints: APIEndpoint {
                 "confirm_password": confirmPassword,
             ]
 
+        case .logout(let refreshToken):
+            return [
+                "refreshToken": refreshToken
+            ]
+
         case .verifyOTP,
             .verifyEmail,
-            .logout,
             .me:
             return nil
 

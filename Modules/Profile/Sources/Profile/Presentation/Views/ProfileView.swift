@@ -5,9 +5,10 @@ public struct ProfileView: View {
     @StateObject private var viewModel: ProfileViewModel
     @AppStorage("themeSelection") private var themeSelection = 0 // 0: System, 1: Light, 2: Dark
     
-    public init(viewModel: ProfileViewModel = ProfileViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
+    @MainActor
+        public init(viewModel: ProfileViewModel? = nil) {
+            _viewModel = StateObject(wrappedValue: viewModel ?? ProfileViewModel())
+        }
     
     private var themeTitle: String {
         switch themeSelection {
@@ -72,7 +73,13 @@ public struct ProfileView: View {
                         viewModel.logout()
                     }) {
                         HStack {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                            if viewModel.isLoggingOut {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                                    .padding(.trailing, 4)
+                            } else {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                            }
                             Text("Logout")
                                 .font(.system(size: 16, weight: .bold))
                         }
@@ -84,6 +91,8 @@ public struct ProfileView: View {
                                 .stroke(Color.App.grayText.opacity(0.3), lineWidth: 1)
                         )
                     }
+                    .disabled(viewModel.isLoggingOut)
+                    .opacity(viewModel.isLoggingOut ? 0.7 : 1.0)
                     .padding(.horizontal, 24)
                     .padding(.top, 32)
                     
