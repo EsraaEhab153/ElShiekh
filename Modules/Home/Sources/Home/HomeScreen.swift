@@ -104,6 +104,7 @@ public struct HomeScreen: View {
 
             if viewModel.hasIncomingRequest {
                 IncomingRequestCardView(
+                    studentName: viewModel.incomingRequest?.studentName ?? "A student",
                     onAccept: { viewModel.acceptIncomingRequest() },
                     onReject: { viewModel.rejectIncomingRequest() }
                 )

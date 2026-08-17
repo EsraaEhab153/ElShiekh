@@ -85,10 +85,12 @@ public struct StatusCardView: View {
 }
 
 public struct IncomingRequestCardView: View {
+    var studentName: String
     var onAccept: () -> Void
     var onReject: () -> Void
     
-    public init(onAccept: @escaping () -> Void, onReject: @escaping () -> Void) {
+    public init(studentName: String, onAccept: @escaping () -> Void, onReject: @escaping () -> Void) {
+        self.studentName = studentName
         self.onAccept = onAccept
         self.onReject = onReject
     }
@@ -99,7 +101,7 @@ public struct IncomingRequestCardView: View {
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(Color.App.primary)
             
-            Text("Ahmed Ali wants to start a study session")
+            Text("\(studentName) wants to start a study session")
                 .font(.system(size: 14, weight: .regular))
                 .foregroundColor(Color.App.grayText)
             
