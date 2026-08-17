@@ -27,7 +27,7 @@ public extension Color {
         public static let grayText = Color(hex: "84938B")
         
         /// Background color for the tab bar and general backgrounds
-        public static let background = Color.white
+        public static let background = Color(UIColor.systemBackground)
         
         /// Background color for cards
         public static let cardBackground = Color(hex: "E8EDE9")

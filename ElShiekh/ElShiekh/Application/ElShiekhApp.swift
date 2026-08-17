@@ -61,17 +61,27 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct ElShiekhApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var authManager = AuthManager.shared
+    @AppStorage("themeSelection") private var themeSelection = 0 // 0: System, 1: Light, 2: Dark
 
     init() {
         // Wire up the network interceptor to use Keychain tokens
         // and AuthManager's refresh logic (replaces the hardcoded test token).
         AuthManager.configureInterceptor()
     }
+    
+    private var preferredScheme: ColorScheme? {
+        switch themeSelection {
+        case 1: return .light
+        case 2: return .dark
+        default: return nil
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(authManager)
+                .preferredColorScheme(preferredScheme)
                 .task {
                     // Attempt silent login: checks Keychain for existing tokens,
                     // validates them against /auth/me, and sets authState accordingly.
