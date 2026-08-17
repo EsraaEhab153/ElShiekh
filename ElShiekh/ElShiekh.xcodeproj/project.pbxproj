@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CA407A66302D771500543F58 /* Authentication in Frameworks */ = {isa = PBXBuildFile; productRef = CA407A65302D771500543F58 /* Authentication */; };
+		CA54936830328F58001DE3B9 /* Profile in Frameworks */ = {isa = PBXBuildFile; productRef = CA54936730328F58001DE3B9 /* Profile */; };
 		CAB4207A30310A2F003990F8 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB4207930310A2F003990F8 /* WidgetKit.framework */; };
 		CAB4207C30310A2F003990F8 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB4207B30310A2F003990F8 /* SwiftUI.framework */; };
 		CAB4207F30310A2F003990F8 /* CallWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB4207E30310A2F003990F8 /* CallWidgetBundle.swift */; };
@@ -93,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA54936830328F58001DE3B9 /* Profile in Frameworks */,
 				CAB4207C30310A2F003990F8 /* SwiftUI.framework in Frameworks */,
 				CAB4207A30310A2F003990F8 /* WidgetKit.framework in Frameworks */,
 				CAB4208F30310D46003990F8 /* Home in Frameworks */,
@@ -242,6 +244,7 @@
 			name = CallWidgetExtension;
 			packageProductDependencies = (
 				CAB4208E30310D46003990F8 /* Home */,
+				CA54936730328F58001DE3B9 /* Profile */,
 			);
 			productName = CallWidgetExtension;
 			productReference = CAB4207830310A2F003990F8 /* CallWidgetExtension.appex */;
@@ -823,6 +826,10 @@
 		CA407A65302D771500543F58 /* Authentication */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Authentication;
+		};
+		CA54936730328F58001DE3B9 /* Profile */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Profile;
 		};
 		CAB4208E30310D46003990F8 /* Home */ = {
 			isa = XCSwiftPackageProductDependency;

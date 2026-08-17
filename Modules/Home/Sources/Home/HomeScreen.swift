@@ -10,7 +10,8 @@ import Common
 import RealtimeKit
 import LiveSessionKit
 import NetworkKit
-import ActivityKit // 👈 ضفنا دي عشان الزرار يشتغل
+import ActivityKit
+import Profile
 
 // MARK: - Incoming Request Payload (from /topic/provider/requests)
 
@@ -60,55 +61,17 @@ public struct HomeScreen: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                HomeHeaderView()
-
-                StatusCardView(isOnline: $viewModel.isOnline) { newValue in
-                    viewModel.handleAvailabilityToggle(newValue)
-                }
-
-                if viewModel.hasIncomingRequest {
-                    IncomingRequestCardView(
-                        onAccept: { viewModel.acceptIncomingRequest() },
-                        onReject: { viewModel.rejectIncomingRequest() }
-                    )
-                }
-
-                // Accept Error Banner
-                if let error = viewModel.acceptError {
-                    HStack(spacing: 8) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(.white)
-                        Text(error)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(.white)
+                // Content Switcher
+                Group {
+                    switch selectedTab {
+                    case .home:
+                        homeContent
+                    case .profile:
+                        ProfileView()
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.App.destructive)
-                    .cornerRadius(12)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 12)
-                    .transition(.opacity)
-                    .onTapGesture { viewModel.acceptError = nil }
                 }
-
-                // Loading Indicator during accept flow
-                if viewModel.isAccepting {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                            .tint(Color.App.primary)
-                        Text("Connecting to session...")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(Color.App.primary)
-                    }
-                    .padding(.top, 16)
-                }
-
-                Spacer()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
-
-
                 CustomTabBar(selectedTab: $selectedTab)
             }
         }
@@ -126,6 +89,60 @@ public struct HomeScreen: View {
                 onLeft: { viewModel.endCall() },
                 onSessionEnded: { viewModel.endCall() }
             )
+        }
+    }
+    
+    // MARK: - Home Tab Content
+    @ViewBuilder
+    private var homeContent: some View {
+        VStack(spacing: 0) {
+            HomeHeaderView()
+
+            StatusCardView(isOnline: $viewModel.isOnline) { newValue in
+                viewModel.handleAvailabilityToggle(newValue)
+            }
+
+            if viewModel.hasIncomingRequest {
+                IncomingRequestCardView(
+                    studentName: viewModel.incomingRequest?.studentName ?? "A student",
+                    onAccept: { viewModel.acceptIncomingRequest() },
+                    onReject: { viewModel.rejectIncomingRequest() }
+                )
+            }
+
+            // Accept Error Banner
+            if let error = viewModel.acceptError {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.white)
+                    Text(error)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(Color.App.destructive)
+                .cornerRadius(12)
+                .padding(.horizontal, 24)
+                .padding(.top, 12)
+                .transition(.opacity)
+                .onTapGesture { viewModel.acceptError = nil }
+            }
+
+            // Loading Indicator during accept flow
+            if viewModel.isAccepting {
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .tint(Color.App.primary)
+                    Text("Connecting to session...")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(Color.App.primary)
+                }
+                .padding(.top, 16)
+            }
+
+            Spacer()
         }
     }
 }

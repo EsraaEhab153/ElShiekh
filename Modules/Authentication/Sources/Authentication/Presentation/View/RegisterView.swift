@@ -47,21 +47,6 @@ public struct RegisterView: View {
                 .padding(.horizontal, DSSpacing.md)
                 .padding(.top, DSSpacing.lg)
 
-                OrDivider()
-                    .padding(.vertical, DSSpacing.md)
-
-                DSGoogleButton(title: "Sign up with Google") {
-                    if let vc = UIApplication.shared.topViewController() {
-                        googleViewModel.signIn(presentingViewController: vc)
-                    }
-                }
-                .disabled(googleViewModel.isLoading)
-                .overlay {
-                    if googleViewModel.isLoading {
-                        ProgressView()
-                    }
-                }
-                .padding(.horizontal, DSSpacing.md)
 
                 FooterWithButton(
                     message: "Already have an account?",

@@ -4,40 +4,31 @@
 import PackageDescription
 
 let package = Package(
-    name: "Home",
+    name: "Profile",
     platforms: [
             .iOS(.v17)
         ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Home",
-            targets: ["Home"]),
+            name: "Profile",
+            targets: ["Profile"]),
     ],
     dependencies: [
         .package(path: "../Common"),
-        .package(path: "../AgoraKit"),
-        .package(path: "../RealtimeKit"),
-        .package(path: "../LiveSessionKit"),
-        .package(path: "../NetworkKit"),
-        .package(path: "../Profile"),
+        .package(path: "../Authentication"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Home",
+            name: "Profile",
             dependencies: [
                 "Common",
-                "AgoraKit",
-                "RealtimeKit",
-                "LiveSessionKit",
-                "NetworkKit",
-                "Profile",
+                "Authentication"
             ]),
         .testTarget(
-            name: "HomeTests",
-            dependencies: ["Home"]),
+            name: "ProfileTests",
+            dependencies: ["Profile"]),
     ]
 )
-

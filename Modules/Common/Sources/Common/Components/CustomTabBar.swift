@@ -52,7 +52,7 @@ public struct CustomTabBar: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.App.background)
+        .background(Color.dynamic(light: .white, dark: Color(white: 0.12)))
         .cornerRadius(32)
         .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
         .padding(.horizontal, 24)
