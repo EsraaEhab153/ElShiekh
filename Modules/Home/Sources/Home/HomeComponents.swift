@@ -6,16 +6,6 @@ public struct HomeHeaderView: View {
     
     public var body: some View {
         HStack(alignment: .top) {
-            // Avatar
-            Circle()
-                .fill(Color.App.primary)
-                .frame(width: 48, height: 48)
-                .overlay(
-                    Text("EE")
-                        .foregroundColor(.white)
-                        .font(.system(size: 16, weight: .bold))
-                )
-            
             Spacer()
             
             // Welcome Text
